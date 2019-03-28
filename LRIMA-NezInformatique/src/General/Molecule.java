@@ -1,6 +1,7 @@
 package General;
 
 public class Molecule {
+	private int id;
 	/**
 	 * Compound written in SMILES format
 	 */
