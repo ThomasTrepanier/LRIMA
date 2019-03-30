@@ -9,10 +9,12 @@ public class M {
 		Graph  furan        = Graph.fromSmiles("o1cccc1");
 		Graph  furan_kekule = furan.kekule();
 		String smi          = furan_kekule.toSmiles();
-		//smi.equals("O1C=CC=C1");
 		
+		Graph g = Graph.fromSmiles("CCO");
+		Graph e = Functions.expand(g);
+		System.out.println(e.toSmiles());
+		//smi.equals("O1C=CC=C1");
 		System.out.println(smi);
-	
 	}
 
 }
