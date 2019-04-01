@@ -2,8 +2,9 @@
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		Resources res = new Resources();
+		Molecule limonene = new Molecule("(-)-Limonene");
+		System.out.println(limonene.getIdentifier("SMILES"));
 	}
 
 }
