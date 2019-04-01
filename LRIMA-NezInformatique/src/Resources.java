@@ -1,5 +1,7 @@
 import java.util.HashMap;
 
+import MolecularProperties.ChemicoPhysicalProperties;
+
 public class Resources {
 	private static HashMap<String, Integer> atomNumbers = new HashMap<String, Integer>();
 	private static HashMap<Character, Float> smilesChar = new HashMap<Character, Float>();

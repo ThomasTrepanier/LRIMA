@@ -1,5 +1,9 @@
 import java.util.HashMap;
 
+import MolecularProperties.ChemicoPhysicalProperties;
+import MolecularProperties.MolecularProperties_Chemical;
+import MolecularProperties.MolecularProperties_Physical;
+
 public class Molecule {
 	
 	private HashMap<String, String> identifiers = new HashMap<String, String>();
@@ -13,6 +17,7 @@ public class Molecule {
 	public Molecule(String name) {
 		addIdentifier("Name", name);
 		addIdentifier("SMILES", loadSmiles());
+		loadChemPhysProperties();
 		//Add SemiDev
 	}
 	
@@ -39,6 +44,7 @@ public class Molecule {
 			else
 				addIdentifier("SMILES", smiles);
 		}
+		loadChemPhysProperties();
 	}
 	
 	/**
@@ -64,6 +70,7 @@ public class Molecule {
 				addIdentifier("SMILES", loadSmiles());
 			}
 		}
+		loadChemPhysProperties();
 	}
 	
 	/**
@@ -128,9 +135,29 @@ public class Molecule {
 	public void loadChemPhysProperties() {
 		//TODO Load chemPhysProps from the file (now resources)
 		String smiles = getIdentifier("SMILES");
-		if(!identifiers.containsKey("SMILES")) {
+		if(smiles == "") {
 			smiles = loadSmiles();
 		}
 		chemPhysProperties = Resources.getChemPhysProps(smiles);
+	}
+	/**
+	 * Get the physical properties of the molecule
+	 * @return {@link MolecularProperties_Physical} physical properties
+	 */
+	public MolecularProperties_Physical getPhysicalProperties() {
+		if(chemPhysProperties != null)
+			return chemPhysProperties.getPhysProperties();
+		else
+			return null;
+	}
+	/**
+	 * Get the chemical properties of the molecule
+	 * @return {@link MolecularProperties_Chemical} chemical properties
+	 */
+	public MolecularProperties_Chemical getChemicalProperties() {
+		if(chemPhysProperties != null)
+			return chemPhysProperties.getChemProperties();
+		else
+			return null;
 	}
 }
