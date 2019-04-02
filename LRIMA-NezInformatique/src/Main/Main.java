@@ -3,13 +3,13 @@ public class Main {
 
 	public static void main(String[] args) {
 		new Resources();
-		//Molecule limonene = new Molecule("(-)-Limonene");
+		Molecule limonene = new Molecule("(-)-Limonene");
 		Molecule ethanal = new Molecule("Ethanal");
 		Molecule acetone = new Molecule("Acetone");
 		Molecule methyl = new Molecule("Methyl");
 		Molecule ethylene = new Molecule("Ethylene");
 		Molecule adamantane = new Molecule("Adamantane");
-		//System.out.println("Limonene SMILES: " + limonene.getIdentifier(Molecule.Identifier.SMILES));
+		System.out.println("Limonene SMILES: " + limonene.getIdentifier(Molecule.Identifier.SMILES));
 		System.out.println("Ethanal Formula: " + CondensedFormula.getCondensedFormula(ethanal.getIdentifier(Molecule.Identifier.SMILES)));
 		System.out.println("Acetone Category: " + CondensedFormula.CategoryMolecule(acetone.getIdentifier(Molecule.Identifier.CONDENSED_FORMULA)));
 		System.out.println("Methyl sub-category: " + CondensedFormula.CategoryOxygen(methyl.getIdentifier(Molecule.Identifier.CONDENSED_FORMULA)));
