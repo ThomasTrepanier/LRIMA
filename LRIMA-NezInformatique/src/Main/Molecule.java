@@ -1,3 +1,4 @@
+package Main;
 import java.util.HashMap;
 
 import MolecularProperties.ChemicoPhysicalProperties;
@@ -10,8 +11,8 @@ import MolecularProperties.MolecularProperties_Physical;
  *
  */
 public class Molecule {
-	
-	private HashMap<String, String> identifiers = new HashMap<String, String>();
+	public static enum Identifier{NAME, SMILES, CONDENSED_FORMULA, SEMI_DEV_FORMULA}
+	private HashMap<Identifier, String> identifiers = new HashMap<Identifier, String>();
 	private float smilesValue;
 	private ChemicoPhysicalProperties chemPhysProperties;
 	
@@ -20,8 +21,9 @@ public class Molecule {
 	 * @param name
 	 */
 	public Molecule(String name) {
-		addIdentifier("Name", name);
-		addIdentifier("SMILES", loadSmiles());
+		addIdentifier(Identifier.NAME, name);
+		addIdentifier(Identifier.SMILES, loadSmiles());
+		addIdentifier(Identifier.CONDENSED_FORMULA, CondensedFormula.getCondensedFormula(getIdentifier(Identifier.SMILES)));
 		loadChemPhysProperties();
 		//Add SemiDev
 	}
@@ -37,18 +39,19 @@ public class Molecule {
 				System.out.println("ERROR, no name nor SMILES assigned to new Molecule");
 			}
 			else {
-				addIdentifier("Name", Resources.getNameFromSmile(smiles));
-				addIdentifier("SMILES", smiles);
+				addIdentifier(Identifier.NAME, Resources.getNameFromSmile(smiles));
+				addIdentifier(Identifier.SMILES, smiles);
 			}
 		}
 		else {
-			addIdentifier("Name", name);
+			addIdentifier(Identifier.NAME, name);
 			if(smiles == "") {
-				addIdentifier("SMILES", loadSmiles());
+				addIdentifier(Identifier.SMILES, loadSmiles());
 			}
 			else
-				addIdentifier("SMILES", smiles);
+				addIdentifier(Identifier.SMILES, smiles);
 		}
+		addIdentifier(Identifier.CONDENSED_FORMULA, CondensedFormula.getCondensedFormula(getIdentifier(Identifier.SMILES)));
 		loadChemPhysProperties();
 	}
 	
@@ -65,16 +68,17 @@ public class Molecule {
 				System.out.println("ERROR, no name nor SMILES assigned to new Molecule");
 			}
 			else {
-				addIdentifier("Name", Resources.getNameFromSmile(smiles));
-				addIdentifier("SMILES", smiles);
+				addIdentifier(Identifier.NAME, Resources.getNameFromSmile(smiles));
+				addIdentifier(Identifier.SMILES, smiles);
 			}
 		}
 		else {
-			addIdentifier("Name", name);
+			addIdentifier(Identifier.NAME, name);
 			if(smiles == "") {
-				addIdentifier("SMILES", loadSmiles());
+				addIdentifier(Identifier.SMILES, loadSmiles());
 			}
 		}
+		addIdentifier(Identifier.CONDENSED_FORMULA, CondensedFormula.getCondensedFormula(getIdentifier(Identifier.SMILES)));
 		loadChemPhysProperties();
 	}
 	
@@ -84,7 +88,7 @@ public class Molecule {
 	 * @param value
 	 * @return
 	 */
-	public String addIdentifier(String key, String value) {
+	public String addIdentifier(Identifier key, String value) {
 		if(identifiers.containsKey(key)) {
 			identifiers.remove(key);
 			identifiers.put(key, value);
@@ -99,7 +103,7 @@ public class Molecule {
 	 * @param key
 	 * @return the value gotten
 	 */
-	public String getIdentifier(String key) {
+	public String getIdentifier(Identifier key) {
 		if(identifiers.containsKey(key)) {
 			return identifiers.get(key);
 		}
@@ -113,8 +117,8 @@ public class Molecule {
 	 */
 	public String loadSmiles() {
 		//TODO Gets Smiles from beam
-		if(!getIdentifier("Name").equals(""))
-			return Resources.getSmilesFromName(getIdentifier("Name"));
+		if(!getIdentifier(Identifier.NAME).equals(""))
+			return Resources.getSmilesFromName(getIdentifier(Identifier.NAME));
 		else 
 			return "";
 	}
@@ -139,7 +143,7 @@ public class Molecule {
 	 */
 	public void loadChemPhysProperties() {
 		//TODO Load chemPhysProps from the file (now resources)
-		String smiles = getIdentifier("SMILES");
+		String smiles = getIdentifier(Identifier.SMILES);
 		if(smiles == "") {
 			smiles = loadSmiles();
 		}
