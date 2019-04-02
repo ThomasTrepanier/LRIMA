@@ -1,7 +1,14 @@
 import java.util.HashMap;
 
 import MolecularProperties.ChemicoPhysicalProperties;
+import MolecularProperties.MolecularProperties_Chemical;
+import MolecularProperties.MolecularProperties_Physical;
 
+/**
+ * Temp class until we stock our data in files (csv)
+ * @author m_bla
+ *
+ */
 public class Resources {
 	private static HashMap<String, Integer> atomNumbers = new HashMap<String, Integer>();
 	private static HashMap<Character, Float> smilesChar = new HashMap<Character, Float>();
@@ -49,6 +56,6 @@ public class Resources {
 		namesToSmiles.put("(-)-Limonene", "CC1=CC[C@H](CC1)C(=C)C");
 	}
 	public void initChemPhysProperties() {
-		chemPhysProps.put("CC1=CC[C@H](CC1)C(=C)C", new ChemicoPhysicalProperties());
+		chemPhysProps.put("CC1=CC[C@H](CC1)C(=C)C", new ChemicoPhysicalProperties(new MolecularProperties_Physical(), new MolecularProperties_Chemical()));
 	}
 }

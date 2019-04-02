@@ -4,6 +4,11 @@ import MolecularProperties.ChemicoPhysicalProperties;
 import MolecularProperties.MolecularProperties_Chemical;
 import MolecularProperties.MolecularProperties_Physical;
 
+/**
+ * Base class of all molecules
+ * @author m_bla
+ *
+ */
 public class Molecule {
 	
 	private HashMap<String, String> identifiers = new HashMap<String, String>();
@@ -122,7 +127,7 @@ public class Molecule {
 		return this.smilesValue;
 	}
 	
-	/**
+	/** TODO
 	 * Calculates the SMILES value of the SMILES (molecule value)
 	 */
 	public void calculateSmilesValue() {

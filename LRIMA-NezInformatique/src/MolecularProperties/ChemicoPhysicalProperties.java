@@ -1,5 +1,10 @@
 package MolecularProperties;
 
+/**
+ * ChemicoPhysical Properties of a molecule (important entry parameters)
+ * @author m_bla
+ *
+ */
 public class ChemicoPhysicalProperties {
 	private MolecularProperties_Physical physProperties;
 	private MolecularProperties_Chemical chemProperties;
@@ -31,8 +36,9 @@ public class ChemicoPhysicalProperties {
 	public void setChemProperties(MolecularProperties_Chemical chemProperties) {
 		this.chemProperties = chemProperties;
 	}
-
-	public ChemicoPhysicalProperties() {
-		
+	
+	public ChemicoPhysicalProperties(MolecularProperties_Physical physProps, MolecularProperties_Chemical chemProps) {
+		this.setPhysProperties(physProps);
+		this.setChemProperties(chemProps);
 	}
 }
