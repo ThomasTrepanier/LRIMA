@@ -7,8 +7,8 @@
 	<classpathentry kind="src" path="func/src/main/java"/>
 	<classpathentry kind="src" path="func/src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="C:/Users/m_bla/Desktop/Tsigep/Programmation/hamcrest-all-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/m_bla/Desktop/Tsigep/Programmation/jopt-simple-5.0.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/m_bla/Desktop/Tsigep/Programmation/mockito-all-1.9.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/e1830672/Documents/GitHub/LRIMA/hamcrest-all-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/e1830672/Documents/GitHub/LRIMA/jopt-simple-5.0.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/e1830672/Documents/GitHub/LRIMA/mockito-all-1.9.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
