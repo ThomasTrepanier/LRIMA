@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="beam-master/core/src/main/java"/>
+	<classpathentry kind="src" path="beam-master/core/src/test/java"/>
+	<classpathentry kind="src" path="beam-master/exec/src/main/java"/>
+	<classpathentry kind="src" path="beam-master/func/src/main/java"/>
+	<classpathentry kind="src" path="beam-master/func/src/test/java"/>
+	<classpathentry excluding="src/" kind="src" path="LRIMA-NezInformatique"/>
+	<classpathentry kind="src" path="LRIMA-NezInformatique/src"/>
+	<classpathentry kind="output" path="beam-master/bin"/>
+</classpath>
