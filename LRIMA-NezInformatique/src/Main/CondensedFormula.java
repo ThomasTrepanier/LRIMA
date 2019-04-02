@@ -221,5 +221,6 @@ public class CondensedFormula {
 
 		return category;
 	}
+	//semiDevFormula
 
 }
