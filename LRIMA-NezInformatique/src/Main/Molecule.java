@@ -1,10 +1,11 @@
 package Main;
+import java.io.IOException;
 import java.util.HashMap;
 
 import MolecularProperties.ChemicoPhysicalProperties;
 import MolecularProperties.MolecularProperties_Chemical;
 import MolecularProperties.MolecularProperties_Physical;
-
+import uk.ac.ebi.beam.*;
 /**
  * Base class of all molecules
  * @author m_bla
@@ -19,39 +20,28 @@ public class Molecule {
 	/**
 	 * Create a molecule from its name
 	 * @param name
+	 * @throws IOException 
 	 */
-	public Molecule(String name) {
-		addIdentifier(Identifier.NAME, name);
-		addIdentifier(Identifier.SMILES, loadSmiles());
-		addIdentifier(Identifier.CONDENSED_FORMULA, CondensedFormula.getCondensedFormula(getIdentifier(Identifier.SMILES)));
+	public Molecule(String name) throws IOException {
+		addIdentifier(Identifier.NAME, name); //Add name identifier
+		addIdentifier(Identifier.SMILES, loadSmiles()); //Add SMILES identifier
+		
+		//Create semi-dev and condensed formula identifier from SMILES
+		createSemiDevIdentifier(identifiers.get(Identifier.SMILES));
 		loadChemPhysProperties();
-		//Add SemiDev
 	}
 	
 	/**
 	 * Create a molecule from either its name or SMILES equivalent
 	 * @param name
 	 * @param smiles
+	 * @throws IOException 
 	 */
-	public Molecule(String name, String smiles) {
-		if(name == "") {
-			if(smiles == "") {
-				System.out.println("ERROR, no name nor SMILES assigned to new Molecule");
-			}
-			else {
-				addIdentifier(Identifier.NAME, Resources.getNameFromSmile(smiles));
-				addIdentifier(Identifier.SMILES, smiles);
-			}
-		}
-		else {
-			addIdentifier(Identifier.NAME, name);
-			if(smiles == "") {
-				addIdentifier(Identifier.SMILES, loadSmiles());
-			}
-			else
-				addIdentifier(Identifier.SMILES, smiles);
-		}
-		addIdentifier(Identifier.CONDENSED_FORMULA, CondensedFormula.getCondensedFormula(getIdentifier(Identifier.SMILES)));
+	public Molecule(String name, String smiles) throws IOException {
+		addIdentifier(Identifier.NAME, name);
+		addIdentifier(Identifier.SMILES, smiles);
+		//Create semi-dev and condensed formula identifier from SMILES
+		createSemiDevIdentifier(identifiers.get(Identifier.SMILES));
 		loadChemPhysProperties();
 	}
 	
@@ -60,28 +50,37 @@ public class Molecule {
 	 * @param name
 	 * @param smiles
 	 * @param semiDevFormula
+	 * @throws IOException 
 	 */
-	public Molecule(String name, String smiles, String semiDevFormula) {
+	public Molecule(String name, String smiles, String semiDevFormula) throws IOException {
 		//TODO add semi dev
-		if(name == "") {
-			if(smiles == "") {
-				System.out.println("ERROR, no name nor SMILES assigned to new Molecule");
-			}
-			else {
-				addIdentifier(Identifier.NAME, Resources.getNameFromSmile(smiles));
-				addIdentifier(Identifier.SMILES, smiles);
-			}
-		}
-		else {
-			addIdentifier(Identifier.NAME, name);
-			if(smiles == "") {
-				addIdentifier(Identifier.SMILES, loadSmiles());
-			}
-		}
-		addIdentifier(Identifier.CONDENSED_FORMULA, CondensedFormula.getCondensedFormula(getIdentifier(Identifier.SMILES)));
+		addIdentifier(Identifier.NAME, name);
+		addIdentifier(Identifier.SMILES, smiles);
+		addIdentifier(Identifier.SEMI_DEV_FORMULA, semiDevFormula);
+		addIdentifier(Identifier.CONDENSED_FORMULA, CondensedFormula.getCondensedFormula(getIdentifier(Identifier.SEMI_DEV_FORMULA)));
+		//Create semi-dev and condensed formula identifier from SMILES
+		createSemiDevIdentifier(identifiers.get(Identifier.SMILES));
 		loadChemPhysProperties();
 	}
 	
+	private void createSemiDevIdentifier(String smiles) throws IOException {
+		//Create semi-dev formula identifier from SMILES
+		smiles = getIdentifier(Identifier.SMILES);
+		Graph g = null;
+		try {
+			g = Graph.fromSmiles(smiles);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Graph semiDev;
+		if(g != null) {
+			semiDev = Functions.expand(g);
+			addIdentifier(Identifier.SEMI_DEV_FORMULA, semiDev.toSmiles());
+		}
+		//Create condensed-formula from semi-dev
+		addIdentifier(Identifier.CONDENSED_FORMULA, CondensedFormula.getCondensedFormula(getIdentifier(Identifier.SEMI_DEV_FORMULA)));
+	}
 	/**
 	 * Add an identifier to the identifiers of the molecule if it doesn't already exists. If so, it updates it
 	 * @param key
