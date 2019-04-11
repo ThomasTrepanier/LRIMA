@@ -13,6 +13,7 @@ import uk.ac.ebi.beam.*;
  */
 public class Molecule {
 	public static enum Identifier{NAME, SMILES, CONDENSED_FORMULA, SEMI_DEV_FORMULA}
+	private static Identifier id;
 	private HashMap<Identifier, String> identifiers = new HashMap<Identifier, String>();
 	private float smilesValue;
 	private ChemicoPhysicalProperties chemPhysProperties;

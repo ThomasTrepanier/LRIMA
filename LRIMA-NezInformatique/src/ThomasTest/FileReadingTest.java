@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
+
 public class FileReadingTest {
 	
 	final int ATOMIC_SYMBOL_COL = 1;
@@ -30,6 +33,7 @@ public class FileReadingTest {
 		printScan(atomicNumberScan);
 		HashMap<String, Integer> atomicNumberMap = loadAtomicNumberFile(atomicNumberScan, delimiter);
 	
+		Workbook wb = new HSSFWorkbook();
 	}
 	
 	private static Scanner createScanner(String fileName) throws FileNotFoundException {
