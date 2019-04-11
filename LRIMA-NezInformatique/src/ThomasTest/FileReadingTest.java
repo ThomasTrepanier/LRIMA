@@ -31,7 +31,7 @@ public class FileReadingTest {
 		
 		Scanner atomicNumberScan = createScanner(atomicNumberName);
 		printScan(atomicNumberScan);
-		HashMap<String, Integer> atomicNumberMap = loadAtomicNumberFile(atomicNumberScan, delimiter);
+		//HashMap<String, Integer> atomicNumberMap = loadAtomicNumberFile(atomicNumberScan, delimiter);
 	
 		Workbook wb = new HSSFWorkbook();
 	}
