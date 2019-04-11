@@ -4,21 +4,27 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class FileReadingTest {
 	
+	//USE ARRAYLIST
+	static String[][] data;
+	static HashMap<String, Integer> dataIdMap = new HashMap<String, Integer>();
 	static String folderPath = "Data/";
 	static char delimiter = ';';
 	public static void main(String[] args) throws IOException {
 		//URL url = FileReadingTest.class.getClassLoader().getResource("test_data.csv");
-		String fileName = folderPath + "test_data.csv";
+		String dataName = folderPath + "test_data.csv";
 		
-		Scanner fileInputStream = createScanner(fileName);
-		Scanner fileSecondaryStream = createScanner(fileName);
-		String[][] data = loadFile(fileInputStream, fileSecondaryStream);
+		Scanner fileInputStream = createScanner(dataName);
+		Scanner fileSecondaryStream = createScanner(dataName);
+		data = loadData(fileInputStream, fileSecondaryStream);
+		initializeDataIdMap(data[0], dataIdMap);
 		print2DArray(data);
+		System.out.println(getValue("Adamantane", "SMILES"));
 	}
 	
 	private static Scanner createScanner(String fileName) throws FileNotFoundException {
@@ -27,7 +33,14 @@ public class FileReadingTest {
 		return fileInputStream;
 	}
 	
-	private static String[][] loadFile(Scanner dataScan, Scanner lineCountScan) {
+	public static void loadFile(Scanner file, ArrayList<String> destination) {
+		String[] data;
+		int elemCount = 0;
+	}
+	public static void loadFile(Scanner file, ArrayList<String> destinationX, ArrayList<String> destinationY) {
+		
+	}
+	private static String[][] loadData(Scanner dataScan, Scanner lineCountScan) {
 		//TODO add error detection
 		//Fill in the data array with the file data
 		int linesCount = findLinesCount(lineCountScan);
@@ -60,6 +73,11 @@ public class FileReadingTest {
 		return data;
 	}
 	
+	private static void initializeDataIdMap(String[] dataLine, HashMap<String, Integer> dataMap) {
+		for(int i = 0; i < dataLine.length; i++) {
+			dataMap.put(dataLine[i], i);
+		}
+	}
 	private static int findColCount(String line, char delimiter) {
 		int count = 0;
 		for(int i = 0; i < line.length(); i++) {
@@ -89,5 +107,24 @@ public class FileReadingTest {
 			}
 			System.out.println("]");
 		}
+	}
+	
+	private static String getValue(String moleculeIdentifier, String key) {
+		//Identifier is name now
+		int valueIndex = 0;
+		if(dataIdMap.containsKey(key)) {
+			valueIndex = dataIdMap.get(key);
+		} else {
+			System.out.println("Mauvaise key pour getValue");
+			return null;
+		}
+		
+		for(int i = 0 ; i < data.length; i++) {
+			if(data[i][0].equals(moleculeIdentifier)) {
+				return data[i][valueIndex];
+			}
+		}
+		System.out.println("Couldn't find identifier");
+		return null;
 	}
 }
