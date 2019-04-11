@@ -6,18 +6,14 @@ import java.util.HashMap;
 public class Data1D<E> {
 
 	private ArrayList<E> data1D;
-
 	
 	public Data1D(ArrayList<E> data) {
 		data1D = data;
 	}
-	
-	
+
 	public E getValue1D(int index) {
 		return data1D.get(index);
 	}
-	
-	
 	
 	public void print1DArray() {
 		if(data1D == null) {
@@ -30,6 +26,4 @@ public class Data1D<E> {
 		}
 		System.out.println("]");
 	}
-
-	
 }
