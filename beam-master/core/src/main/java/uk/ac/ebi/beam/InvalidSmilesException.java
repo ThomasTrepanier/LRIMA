@@ -36,9 +36,14 @@ import java.io.IOException;
  *
  * @author John May
  */
-final class InvalidSmilesException extends IOException {
+public final class InvalidSmilesException extends IOException {
 
-    InvalidSmilesException(String message, CharBuffer buffer) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	InvalidSmilesException(String message, CharBuffer buffer) {
         this(message, buffer, 0);
     }
     

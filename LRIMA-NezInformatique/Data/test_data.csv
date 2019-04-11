@@ -1,0 +1,6 @@
+Name;SMILES;Formula;CondensedFormula;Family;Sub-Family
+Acetaldehyde;CC=O;[CH3][CH]=[O];C2H4O1;Oxygen;Aldehyde
+Acetone;CC(=O)C;[CH3][C](=[O])[CH3];C3H6O1;Oxygen;Ketone
+Methyl_formate;COC=O;[CH3][O][CH]=[O];C2H4O2;Oxygen;Ester
+Ethylene;C=C;[CH2]=[CH2];C2H4;Hydrocarbon;Alcene
+Adamantane;C1C2CC3CC1CC(C2)C3;[CH2]1[CH]2[CH2][CH]3[CH2][CH]1[CH2][CH]([CH2]2)[CH2]3;C10H16;Hydrocarbon;Terpene
