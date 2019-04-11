@@ -3,28 +3,33 @@ package ThomasTest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class FileReadingTest {
 	
+	final int ATOMIC_SYMBOL_COL = 1;
+	final int ATOMIC_NUMBER_COL = 2;
 	//USE ARRAYLIST
-	static String[][] data;
-	static HashMap<String, Integer> dataIdMap = new HashMap<String, Integer>();
 	static String folderPath = "Data/";
 	static char delimiter = ';';
 	public static void main(String[] args) throws IOException {
 		//URL url = FileReadingTest.class.getClassLoader().getResource("test_data.csv");
 		String dataName = folderPath + "test_data.csv";
+		String atomicNumberName = folderPath + "elements.xlsx";
+		File atomicNumberFile = new File(atomicNumberName);
 		
+		//Data scan
 		Scanner fileInputStream = createScanner(dataName);
-		Scanner fileSecondaryStream = createScanner(dataName);
-		data = loadData(fileInputStream, fileSecondaryStream);
-		initializeDataIdMap(data[0], dataIdMap);
-		print2DArray(data);
-		System.out.println(getValue("Adamantane", "SMILES"));
+		Data2D<String> mainData = loadFile(fileInputStream, delimiter);
+		mainData.print2DArray();
+		System.out.println(mainData.getValue2D("Acetone", "SMILES"));
+		
+		Scanner atomicNumberScan = createScanner(atomicNumberName);
+		printScan(atomicNumberScan);
+		HashMap<String, Integer> atomicNumberMap = loadAtomicNumberFile(atomicNumberScan, delimiter);
+	
 	}
 	
 	private static Scanner createScanner(String fileName) throws FileNotFoundException {
@@ -33,98 +38,58 @@ public class FileReadingTest {
 		return fileInputStream;
 	}
 	
-	public static void loadFile(Scanner file, ArrayList<String> destination) {
-		String[] data;
-		int elemCount = 0;
+	public static Data1D<String> loadFile(Scanner file) {
+		ArrayList<String> list = new ArrayList<String>();
+		while(file.hasNext()) {
+			list.add(file.next());
+		}
+		Data1D<String> data = new Data1D<String>(list);
+		return data;
 	}
-	public static void loadFile(Scanner file, ArrayList<String> destinationX, ArrayList<String> destinationY) {
+	public static Data2D<String> loadFile(Scanner file, char delimiter) {
+		ArrayList<ArrayList<String>> dataLoaded = new ArrayList<ArrayList<String>>();
 		
-	}
-	private static String[][] loadData(Scanner dataScan, Scanner lineCountScan) {
-		//TODO add error detection
-		//Fill in the data array with the file data
-		int linesCount = findLinesCount(lineCountScan);
-		String line = "";
-		if(dataScan.hasNext()) {
-			line = dataScan.next();
-		}
-		int colCount = findColCount(line, delimiter);
-		String[][] data = new String[linesCount][colCount];
-		int lineAt = 0;
-		while(dataScan.hasNext()) {
-			if(lineAt != 0)
-				line = dataScan.next();
-			String dataRead = "";
-			int colAt = 0;
+		while(file.hasNext()) {
+			ArrayList<String> nextArray = new ArrayList<String>();
+			String line = file.next();
+			String data = "";
 			for(int i = 0; i < line.length(); i++) {
-				char charRead = line.charAt(i);
-				if(charRead == delimiter || i == line.length() - 1) {
-					if(i == line.length() - 1) //if at the end of the line, need to add it too
-						dataRead += line.charAt(i);
-					data[lineAt][colAt] = dataRead;
-					colAt++;
-					dataRead = "";
+				char c = line.charAt(i);
+				if(i == line.length() - 1) {
+					data += c;
+					nextArray.add(data);
+					data = "";
 				}
-				else
-					dataRead += charRead;
+				else if(c == delimiter) {
+					nextArray.add(data);
+					data = "";
+				} else {
+					data += c;
+				}
 			}
-			lineAt++;
+			dataLoaded.add(nextArray);
 		}
+		Data2D<String> data = new Data2D<String>(dataLoaded);
 		return data;
 	}
 	
-	private static void initializeDataIdMap(String[] dataLine, HashMap<String, Integer> dataMap) {
-		for(int i = 0; i < dataLine.length; i++) {
-			dataMap.put(dataLine[i], i);
-		}
-	}
-	private static int findColCount(String line, char delimiter) {
-		int count = 0;
-		for(int i = 0; i < line.length(); i++) {
-			if(line.charAt(i) == delimiter)
-				count++;
-		}
-		return count + 1;
-	}
-	
-	private static int findLinesCount(Scanner scan) {
-		int count = 0;
-		while(scan.hasNext()) {
-			scan.next();
-			count++;
-		}
-		scan.reset();
-		return count;
-	}
-	
-	private static void print2DArray(String[][] array) {
-		for(int i = 0; i < array.length; i++) {
-			System.out.print("[");
-			for(int j = 0; j < array[0].length; j++) {
-				System.out.print(array[i][j]);
-				if(j != array[0].length - 1)
-					System.out.print(",");
-			}
-			System.out.println("]");
-		}
-	}
-	
-	private static String getValue(String moleculeIdentifier, String key) {
-		//Identifier is name now
-		int valueIndex = 0;
-		if(dataIdMap.containsKey(key)) {
-			valueIndex = dataIdMap.get(key);
-		} else {
-			System.out.println("Mauvaise key pour getValue");
-			return null;
-		}
+	public static HashMap<String, Integer> loadAtomicNumberFile(Scanner file, char delimiter){
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		
-		for(int i = 0 ; i < data.length; i++) {
-			if(data[i][0].equals(moleculeIdentifier)) {
-				return data[i][valueIndex];
-			}
+		file.next();
+		while(file.hasNext()) {
+			String line = file.next();
+			System.out.println(line);
+			line.substring(0, line.indexOf(delimiter));
+			System.out.println(line);
 		}
-		System.out.println("Couldn't find identifier");
-		return null;
+		return map;
 	}
+	
+	private static void printScan(Scanner scan) {
+		while(scan.hasNext()) {
+			System.out.println(scan.next() + ";");
+		}
+	}
+	
 }
