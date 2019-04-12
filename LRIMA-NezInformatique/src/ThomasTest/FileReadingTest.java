@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 public class FileReadingTest {
@@ -32,6 +34,7 @@ public class FileReadingTest {
 		HashMap<String, Integer> atomicNumberMap = FileReader.readAtomsFile(atomicNumberFile);
 		
 		System.out.println("O: " + atomicNumberMap.get("O"));
+		JOptionPane.showInputDialog("Test");
 	}
 	
 	private static void printScan(Scanner scan) {

@@ -1,5 +1,7 @@
 package MolecularProperties;
 
+import java.util.ArrayList;
+
 /**
  * ChemicoPhysical Properties of a molecule (important entry parameters)
  * @author m_bla
@@ -35,6 +37,12 @@ public class ChemicoPhysicalProperties {
 	 */
 	public void setChemProperties(MolecularProperties_Chemical chemProperties) {
 		this.chemProperties = chemProperties;
+	}
+	
+	public ChemicoPhysicalProperties(ArrayList<String> properties) {
+		//TODO Separate phys properties from chem properties
+		String family = properties.get(0);
+		String sub_family = properties.get(1);
 	}
 	
 	public ChemicoPhysicalProperties(MolecularProperties_Physical physProps, MolecularProperties_Chemical chemProps) {

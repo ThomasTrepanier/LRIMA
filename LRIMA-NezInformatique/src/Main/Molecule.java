@@ -1,10 +1,16 @@
 package Main;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 
 import MolecularProperties.ChemicoPhysicalProperties;
 import MolecularProperties.MolecularProperties_Chemical;
 import MolecularProperties.MolecularProperties_Physical;
+import ThomasTest.Utils;
 import uk.ac.ebi.beam.*;
 /**
  * Base class of all molecules
@@ -61,6 +67,24 @@ public class Molecule {
 		//Create semi-dev and condensed formula identifier from SMILES
 		createSemiDevIdentifier(identifiers.get(Identifier.SMILES));
 		loadChemPhysProperties();
+	}
+	
+	public Molecule(XSSFRow loadedRow, HashMap<String, Integer> identifierMap) {
+		HashMap<Integer, String> reverseMap = Utils.switchHashMap(identifierMap);
+		ArrayList<String> properties = new ArrayList<String>();
+		
+		for(Cell cell : loadedRow) {
+			if(!cell.getCellTypeEnum().equals(CellType.FORMULA)) {
+				String cellContent = cell.getStringCellValue();
+				properties.add(cellContent);
+			}
+		}
+		
+		addIdentifier(Identifier.NAME, Utils.getAndRemove(properties, identifierMap.get("Name")));
+		addIdentifier(Identifier.SMILES, Utils.getAndRemove(properties, identifierMap.get("SMILES")));
+		addIdentifier(Identifier.SEMI_DEV_FORMULA, Utils.getAndRemove(properties, identifierMap.get("Formula")));
+		addIdentifier(Identifier.CONDENSED_FORMULA, Utils.getAndRemove(properties, identifierMap.get("Condensed_Formula")));
+		this.chemPhysProperties = new ChemicoPhysicalProperties(properties);
 	}
 	
 	private void createSemiDevIdentifier(String smiles) throws IOException {
