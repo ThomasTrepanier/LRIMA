@@ -138,7 +138,7 @@ public class FileLoader {
 		return new Data2D<String>(dataLoaded);
 	}
 	
-	public static HashMap<String, Integer> loadAtomicNumberFile(Workbook wb){
+	public static HashMap<String, Integer> loadHashMap(Workbook wb, int keyCol, int valueCol){
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		int sheetAmount = wb.getNumberOfSheets();
 		if(sheetAmount < 0)
@@ -153,11 +153,11 @@ public class FileLoader {
 			row = (XSSFRow) workingSheet.getRow(r);
 			
 			//Gets the Atomic Symbol from cell
-			Cell symbolCell = row.getCell(ATOMIC_SYMBOL_COL);
+			Cell symbolCell = row.getCell(keyCol);
 			String rowSymbol = symbolCell.getStringCellValue();
 			
 			//Gets the atomic number from cell
-			Cell numberCell = row.getCell(ATOMIC_NUMBER_COL);
+			Cell numberCell = row.getCell(valueCol);
 			int rowAtomicNumber;
 			//Finds appropriate function depending on the cell type
 			if(numberCell.getCellTypeEnum().equals(CellType.NUMERIC)) {

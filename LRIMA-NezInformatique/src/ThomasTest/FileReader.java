@@ -13,6 +13,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class FileReader<E> {
 	
+	final static int ATOMIC_SYMBOL_COL = 1;
+	final static int ATOMIC_NUMBER_COL = 2;
+	
 	public static Data2D<String> readDataFile(File file) throws InvalidFormatException, IOException{
 		Workbook dataWorkbook = createWorkbook(file);
 		Data2D<String> data = FileLoader.loadFileIn2D(dataWorkbook);
@@ -29,7 +32,7 @@ public class FileReader<E> {
 	
 	public static HashMap<String, Integer> readAtomsFile(File file) throws InvalidFormatException, IOException{
 		Workbook dataWorkbook = createWorkbook(file);
-		return FileLoader.loadAtomicNumberFile(dataWorkbook);
+		return FileLoader.loadHashMap(dataWorkbook, ATOMIC_SYMBOL_COL, ATOMIC_NUMBER_COL);
 	}
 	
 	private static Scanner createScanner(String fileName) throws FileNotFoundException {
