@@ -13,8 +13,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 
 public class FileLoader {
-	final static int ATOMIC_SYMBOL_COL = 1;
-	final static int ATOMIC_NUMBER_COL = 2;
 	
 	public static Data1D<String> loadFile(Scanner file) {
 		ArrayList<String> list = new ArrayList<String>();
