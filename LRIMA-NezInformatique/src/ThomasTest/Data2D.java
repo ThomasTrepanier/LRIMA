@@ -16,6 +16,14 @@ public class Data2D<E> {
 		}
 	}
 	
+	public E getValue2D(int lineId, int colId) {
+		return data2D.get(lineId).get(colId);
+	}
+	
+	public E getValue2D(int lineId, E colIdentifier) {
+		return data2D.get(lineId).get(colIndexMap.get(colIdentifier));
+	}
+	
 	public E getValue2D(E lineIdentifier, E colIdentifier) {
 		int ligId = 0;
 		int colId = colIndexMap.get(colIdentifier);
@@ -27,6 +35,14 @@ public class Data2D<E> {
 			}
 		}
 		return data2D.get(ligId).get(colId);
+	}
+	
+	public ArrayList<ArrayList<E>> getData(){
+		return data2D;
+	}
+	
+	public int getColIndex(E value) {
+		return colIndexMap.get(value);
 	}
 	public void print2DArray() {
 		if(data2D == null) {

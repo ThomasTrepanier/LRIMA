@@ -94,7 +94,7 @@ public class CondensedFormula {
 			return false;
 		}
 	}
-	public static String CategoryMolecule(String condensedFormula) {
+	public static String getMoleculeCategory(String condensedFormula) {
 		String category;
 		condensedFormula.toUpperCase();
 
@@ -112,7 +112,7 @@ public class CondensedFormula {
 	}
 	
 	public static String getSubCategory(String condensedFormula) {
-		String category = CategoryMolecule(condensedFormula);
+		String category = getMoleculeCategory(condensedFormula);
 		String subCategory = "";
 		switch(category) {
 		case ("hydrocarbon"):
@@ -128,7 +128,7 @@ public class CondensedFormula {
 		return subCategory;
 	}
 	public static String CategoryHydrocarbon(String condensedFormula) {
-		if(!CategoryMolecule(condensedFormula).equals("hydrocarbon")) //Not an hydrocarbon
+		if(!getMoleculeCategory(condensedFormula).equals("hydrocarbon")) //Not an hydrocarbon
 			return "";
 		
 		String category;
@@ -173,7 +173,7 @@ public class CondensedFormula {
 	}
 
 	public static String CategoryOxygen(String condensedFormula) {
-		if(!CategoryMolecule(condensedFormula).equals("oxygen")) //Not an oxygene
+		if(!getMoleculeCategory(condensedFormula).equals("oxygen")) //Not an oxygene
 			return "";
 		
 		String category;

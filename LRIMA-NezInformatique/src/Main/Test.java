@@ -10,7 +10,7 @@ public class Test {
 		//molecule = CondensedFormula.condensedFormula(molecule);
 		//System.out.println();
 		
-		String B = CondensedFormula.CategoryMolecule(molecule);
+		String B = CondensedFormula.getMoleculeCategory(molecule);
 		System.out.println(B);
 		
 		String C = CondensedFormula.CategoryHydrocarbon(molecule);
