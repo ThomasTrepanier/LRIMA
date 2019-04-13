@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import MolecularProperties.ChemicoPhysicalProperties;
 import MolecularProperties.MolecularProperties_Chemical;
 import MolecularProperties.MolecularProperties_Physical;
+import ThomasTest.Data2D;
 import ThomasTest.Utils;
 import uk.ac.ebi.beam.*;
 /**
@@ -69,24 +70,20 @@ public class Molecule {
 		loadChemPhysProperties();
 	}
 	
-	public Molecule(XSSFRow loadedRow, HashMap<String, Integer> identifierMap) {
-		HashMap<Integer, String> reverseMap = Utils.switchHashMap(identifierMap);
+	public Molecule(ArrayList<String> data, HashMap<String, Integer> indexMap) {
 		ArrayList<String> properties = new ArrayList<String>();
 		
-		for(Cell cell : loadedRow) {
-			if(!cell.getCellTypeEnum().equals(CellType.FORMULA)) {
-				String cellContent = cell.getStringCellValue();
-				properties.add(cellContent);
-			}
+		for(String s : data) {
+			properties.add(s);
 		}
 		
-		addIdentifier(Identifier.NAME, Utils.getAndRemove(properties, identifierMap.get("Name")));
-		addIdentifier(Identifier.SMILES, Utils.getAndRemove(properties, identifierMap.get("SMILES")));
-		addIdentifier(Identifier.SEMI_DEV_FORMULA, Utils.getAndRemove(properties, identifierMap.get("Formula")));
-		addIdentifier(Identifier.CONDENSED_FORMULA, Utils.getAndRemove(properties, identifierMap.get("Condensed_Formula")));
+		addIdentifier(Identifier.NAME, properties.get(indexMap.get("Name")));
+		addIdentifier(Identifier.SMILES, properties.get(indexMap.get("SMILES")));
+		addIdentifier(Identifier.SEMI_DEV_FORMULA, properties.get(indexMap.get("Formula")));
+		addIdentifier(Identifier.CONDENSED_FORMULA, properties.get(indexMap.get("CondensedFormula")));
 		this.chemPhysProperties = new ChemicoPhysicalProperties(properties);
 	}
-	
+
 	private void createSemiDevIdentifier(String smiles) throws IOException {
 		//Create semi-dev formula identifier from SMILES
 		smiles = getIdentifier(Identifier.SMILES);
@@ -191,5 +188,15 @@ public class Molecule {
 			return chemPhysProperties.getChemProperties();
 		else
 			return null;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Molecule [" + getIdentifier(Identifier.NAME) + " , " + getIdentifier(Identifier.SMILES) + " , " 
+				+ getIdentifier(Identifier.SEMI_DEV_FORMULA) + " , " + getIdentifier(Identifier.CONDENSED_FORMULA) + "]";
 	}
 }

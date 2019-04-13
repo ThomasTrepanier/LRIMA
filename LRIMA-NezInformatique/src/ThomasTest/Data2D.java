@@ -16,6 +16,18 @@ public class Data2D<E> {
 		}
 	}
 	
+	public ArrayList<E> getLine(int id){
+		return data2D.get(id);
+	}
+	public ArrayList<E> getLine(E lineIdentifier){
+		for(ArrayList<E> list : data2D) {
+			for(E value : list) {
+				if(value.equals(lineIdentifier))
+					return list;
+			}
+		}
+		return null;
+	}
 	public E getValue2D(int lineId, int colId) {
 		return data2D.get(lineId).get(colId);
 	}
@@ -39,6 +51,9 @@ public class Data2D<E> {
 	
 	public ArrayList<ArrayList<E>> getData(){
 		return data2D;
+	}
+	public HashMap<E, Integer> getIndexMap(){
+		return this.colIndexMap;
 	}
 	
 	public int getColIndex(E value) {

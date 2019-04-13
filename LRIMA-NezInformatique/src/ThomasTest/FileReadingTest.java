@@ -9,6 +9,8 @@ import javax.swing.JOptionPane;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import Main.Molecule;
+
 public class FileReadingTest {
 	
 	//USE ARRAYLIST
@@ -34,7 +36,12 @@ public class FileReadingTest {
 		HashMap<String, Integer> atomicNumberMap = FileReader.readAtomsFile(atomicNumberFile);
 		
 		System.out.println("O: " + atomicNumberMap.get("O"));
-		JOptionPane.showInputDialog("Test");
+		
+		for(String s : mainData.getIndexMap().keySet()) {
+			System.out.print(s + ", ");
+		}
+		Molecule aldehyde = new Molecule(mainData.getLine("Aldehyde"), mainData.getIndexMap());
+		System.out.println("\n" + aldehyde);
 	}
 	
 	private static void printScan(Scanner scan) {
