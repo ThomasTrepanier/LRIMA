@@ -13,8 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class FileReader<E> {
 	
-	final static int ATOMIC_SYMBOL_COL = 1;
-	final static int ATOMIC_NUMBER_COL = 2;
+	final static int ATOMIC_SYMBOL_COL = 0;
+	final static int ATOMIC_NUMBER_COL = 1;
 	
 	public static Data2D<String> readDataFile(File file) throws InvalidFormatException, IOException{
 		Workbook dataWorkbook = createWorkbook(file);

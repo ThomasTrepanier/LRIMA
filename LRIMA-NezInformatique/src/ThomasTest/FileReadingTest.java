@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import Main.Molecule;
+import Main.Molecule.Identifier;
 
 public class FileReadingTest {
 	
@@ -21,7 +22,7 @@ public class FileReadingTest {
 		String dataExcelName = folderPath + "test_data.xlsx";
 		File dataFile = new File(dataExcelName);
 		
-		String atomicNumberName = folderPath + "elements - Copie.xlsx";
+		String atomicNumberName = folderPath + "atoms.xlsx";
 		File atomicNumberFile = new File(atomicNumberName);
 		
 		//Data scan
@@ -40,8 +41,15 @@ public class FileReadingTest {
 		for(String s : mainData.getIndexMap().keySet()) {
 			System.out.print(s + ", ");
 		}
-		Molecule aldehyde = new Molecule(mainData.getLine("Aldehyde"), mainData.getIndexMap());
-		System.out.println("\n" + aldehyde);
+//		Molecule aldehyde = new Molecule(mainData.getLine("Aldehyde"), mainData.getIndexMap());
+//		System.out.println("\n" + aldehyde);
+//		
+//		Molecule ethylene = new Molecule(mainData.getLine("Ethylene"), mainData.getIndexMap());
+//		System.out.print(ethylene + "\n" + ethylene.getIdentifier(Identifier.SMILES));
+		
+		Molecule Adamantane = new Molecule(mainData.getLine("Adamantane"));
+		System.out.println("\n\n" + Adamantane);
+		System.out.println(Adamantane.toStringLong());
 	}
 	
 	private static void printScan(Scanner scan) {

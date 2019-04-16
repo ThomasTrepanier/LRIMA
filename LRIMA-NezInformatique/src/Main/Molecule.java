@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import MolecularProperties.ChemicoPhysicalProperties;
 import MolecularProperties.MolecularProperties_Chemical;
 import MolecularProperties.MolecularProperties_Physical;
+import ThomasTest.Data1D;
 import ThomasTest.Data2D;
 import ThomasTest.Utils;
 import uk.ac.ebi.beam.*;
@@ -22,20 +23,21 @@ public class Molecule {
 	public static enum Identifier{NAME, SMILES, CONDENSED_FORMULA, SEMI_DEV_FORMULA}
 	private HashMap<Identifier, String> identifiers = new HashMap<Identifier, String>();
 	private float smilesValue;
-	private ChemicoPhysicalProperties chemPhysProperties;
+	private Data1D<String> properties;
 	
 	/**
 	 * Create a molecule from its name
 	 * @param name
 	 * @throws IOException 
+	 * @deprecated
 	 */
+	@Deprecated
 	public Molecule(String name) throws IOException {
 		addIdentifier(Identifier.NAME, name); //Add name identifier
 		addIdentifier(Identifier.SMILES, loadSmiles()); //Add SMILES identifier
 		
 		//Create semi-dev and condensed formula identifier from SMILES
 		createSemiDevIdentifier(identifiers.get(Identifier.SMILES));
-		loadChemPhysProperties();
 	}
 	
 	/**
@@ -43,13 +45,14 @@ public class Molecule {
 	 * @param name
 	 * @param smiles
 	 * @throws IOException 
+	 * @deprecated
 	 */
+	@Deprecated
 	public Molecule(String name, String smiles) throws IOException {
 		addIdentifier(Identifier.NAME, name);
 		addIdentifier(Identifier.SMILES, smiles);
 		//Create semi-dev and condensed formula identifier from SMILES
 		createSemiDevIdentifier(identifiers.get(Identifier.SMILES));
-		loadChemPhysProperties();
 	}
 	
 	/**
@@ -58,7 +61,9 @@ public class Molecule {
 	 * @param smiles
 	 * @param semiDevFormula
 	 * @throws IOException 
+	 * @deprecated
 	 */
+	@Deprecated
 	public Molecule(String name, String smiles, String semiDevFormula) throws IOException {
 		//TODO add semi dev
 		addIdentifier(Identifier.NAME, name);
@@ -67,21 +72,15 @@ public class Molecule {
 		addIdentifier(Identifier.CONDENSED_FORMULA, CondensedFormula.getCondensedFormula(getIdentifier(Identifier.SEMI_DEV_FORMULA)));
 		//Create semi-dev and condensed formula identifier from SMILES
 		createSemiDevIdentifier(identifiers.get(Identifier.SMILES));
-		loadChemPhysProperties();
 	}
 	
-	public Molecule(ArrayList<String> data, HashMap<String, Integer> indexMap) {
-		ArrayList<String> properties = new ArrayList<String>();
+	public Molecule(Data1D<String> data) {
+		properties = data;	
 		
-		for(String s : data) {
-			properties.add(s);
-		}
-		
-		addIdentifier(Identifier.NAME, properties.get(indexMap.get("Name")));
-		addIdentifier(Identifier.SMILES, properties.get(indexMap.get("SMILES")));
-		addIdentifier(Identifier.SEMI_DEV_FORMULA, properties.get(indexMap.get("Formula")));
-		addIdentifier(Identifier.CONDENSED_FORMULA, properties.get(indexMap.get("CondensedFormula")));
-		this.chemPhysProperties = new ChemicoPhysicalProperties(properties);
+		addIdentifier(Identifier.NAME, properties.getValue1D("Name"));
+		addIdentifier(Identifier.SMILES, properties.getValue1D("SMILES"));
+		addIdentifier(Identifier.SEMI_DEV_FORMULA, properties.getValue1D("Formula"));
+		addIdentifier(Identifier.CONDENSED_FORMULA, properties.getValue1D("CondensedFormula"));
 	}
 
 	private void createSemiDevIdentifier(String smiles) throws IOException {
@@ -158,39 +157,6 @@ public class Molecule {
 		
 	}
 	
-	/**
-	 * Loads the Chemico-Physical Properties of the molecule
-	 */
-	public void loadChemPhysProperties() {
-		//TODO Load chemPhysProps from the file (now resources)
-		String smiles = getIdentifier(Identifier.SMILES);
-		if(smiles == "") {
-			smiles = loadSmiles();
-		}
-		chemPhysProperties = Resources.getChemPhysProps(smiles);
-	}
-	/**
-	 * Get the physical properties of the molecule
-	 * @return {@link MolecularProperties_Physical} physical properties
-	 */
-	public MolecularProperties_Physical getPhysicalProperties() {
-		if(chemPhysProperties != null)
-			return chemPhysProperties.getPhysProperties();
-		else
-			return null;
-	}
-	/**
-	 * Get the chemical properties of the molecule
-	 * @return {@link MolecularProperties_Chemical} chemical properties
-	 */
-	public MolecularProperties_Chemical getChemicalProperties() {
-		if(chemPhysProperties != null)
-			return chemPhysProperties.getChemProperties();
-		else
-			return null;
-	}
-	
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -198,5 +164,17 @@ public class Molecule {
 	public String toString() {
 		return "Molecule [" + getIdentifier(Identifier.NAME) + " , " + getIdentifier(Identifier.SMILES) + " , " 
 				+ getIdentifier(Identifier.SEMI_DEV_FORMULA) + " , " + getIdentifier(Identifier.CONDENSED_FORMULA) + "]";
+	}
+	
+	public String toStringLong() {
+		return getPropsAsString();
+	}
+	
+	public String getPropsAsString() {
+		String s = "";
+		for(String v : properties.getData1D()) {
+			s += v + ", ";
+		}
+		return s;
 	}
 }

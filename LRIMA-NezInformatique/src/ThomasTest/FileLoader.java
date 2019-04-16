@@ -59,21 +59,21 @@ public class FileLoader {
 		return new Data1D<String>(list);
 	}
 	public static Data2D<String> loadFile(Scanner file, char delimiter) {
-		ArrayList<ArrayList<String>> dataLoaded = new ArrayList<ArrayList<String>>();
+		ArrayList<Data1D<String>> dataLoaded = new ArrayList<Data1D<String>>();
 		
 		while(file.hasNext()) {
-			ArrayList<String> nextArray = new ArrayList<String>();
+			Data1D<String> nextArray = new Data1D<String>();
 			String line = file.next();
 			String data = "";
 			for(int i = 0; i < line.length(); i++) {
 				char c = line.charAt(i);
 				if(i == line.length() - 1) {
 					data += c;
-					nextArray.add(data);
+					nextArray.getData1D().add(data);
 					data = "";
 				}
 				else if(c == delimiter) {
-					nextArray.add(data);
+					nextArray.addData(data);
 					data = "";
 				} else {
 					data += c;
@@ -87,7 +87,7 @@ public class FileLoader {
 	
 	public static Data2D<String> loadFileIn2D(Workbook wb){
 		Iterator<Sheet> it = wb.sheetIterator();
-		ArrayList<ArrayList<String>> dataLoaded = new ArrayList<ArrayList<String>>();
+		ArrayList<Data1D<String>> dataLoaded = new ArrayList<Data1D<String>>();
 		Sheet currentSheet = null;
 		
 		while(it.hasNext()) {
@@ -96,16 +96,16 @@ public class FileLoader {
 			int cells = currentSheet.getRow(0).getPhysicalNumberOfCells();
 			
 			for(int r = 0; r < rows; r++) {
-				ArrayList<String> line = new ArrayList<String>();
+				Data1D<String> line = new Data1D<String>();
 				Row row = currentSheet.getRow(r);
 				
 				if(row != null){
 					for(int c = 0; c < cells; c++) {
 						Cell cell = row.getCell(c);
 						if(cell != null) {
-							line.add(c, cell.toString());
+							line.addRangeData(c, cell.toString());
 						} else
-							line.add(c, "");
+							line.addRangeData(c, "");;
 					}
 					dataLoaded.add(line);
 				}
@@ -114,21 +114,21 @@ public class FileLoader {
 		return new Data2D<String>(dataLoaded);
 	}
 	public static Data2D<String> loadFileIn2D(Sheet sheet){
-		ArrayList<ArrayList<String>> dataLoaded = new ArrayList<ArrayList<String>>();
+		ArrayList<Data1D<String>> dataLoaded = new ArrayList<Data1D<String>>();
 		int rows = sheet.getPhysicalNumberOfRows();
 		int cells = sheet.getRow(0).getPhysicalNumberOfCells();
 		
 		for(int r = 0; r < rows; r++) {
-			ArrayList<String> line = new ArrayList<String>();
+			Data1D<String> line = new Data1D<String>();
 			Row row = sheet.getRow(r);
 			
 			if(row != null){
 				for(int c = 0; c < cells; c++) {
 					Cell cell = row.getCell(c);
 					if(cell != null) {
-						line.add(c, cell.toString());
+						line.addRangeData(c, cell.toString());
 					} else
-						line.add(c, "");
+						line.addRangeData(c, "");
 				}
 				dataLoaded.add(line);
 			}

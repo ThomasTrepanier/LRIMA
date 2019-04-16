@@ -17,21 +17,21 @@ public class DataFill {
 	static String sub_fam = "Sub-Family";
 	
 	public static void fillMissingMoleculeData(Data2D<String> data) throws IOException {
-		ArrayList<ArrayList<String>> list2D = data.getData();
+		ArrayList<Data1D<String>> list2D = data.getData();
 		
 		for(int l = 0; l < list2D.size(); l++) {
-			ArrayList<String> list = list2D.get(l);
+			Data1D<String> list = list2D.get(l);
 			if(list != null) {
-				for(int i = 0; i < list.size(); i++) {
-					String value = list.get(i);
+				for(int i = 0; i < list.getDataSize(); i++) {
+					String value = list.getValue1D(i);
 					if(value.equals("")) {
 						if(i == 0) { //Throw error, because can't not have the name
 							System.out.println("Name not present at " + l + "," + i);
 						} else {
 							String keyType = getKeyType(data, i);
 							String newValue = fillCell(data, list, keyType);
-							list.remove(i);
-							list.add(i, newValue);
+							list.removeData(i);
+							list.addRangeData(i, newValue);
 						}
 					}
 				}
@@ -43,7 +43,7 @@ public class DataFill {
 		return data.getValue2D(0, i);
 	}
 	
-	public static String fillCell(Data2D<String> data, ArrayList<String> line, String keyType) throws IOException {
+	public static String fillCell(Data2D<String> data, Data1D<String> line, String keyType) throws IOException {
 		String value = "";
 		switch(keyType) {
 		case ("SMILES"):
@@ -65,9 +65,9 @@ public class DataFill {
 		return value;
 	}
 	
-	public static String createSmiles(Data2D<String> data, ArrayList<String> line) throws IOException { //TODO other way to load SMILES
+	public static String createSmiles(Data2D<String> data, Data1D<String> line) throws IOException { //TODO other way to load SMILES
 		int formulaIndex = data.getColIndex(formula);
-		String formula = line.get(formulaIndex);
+		String formula = line.getValue1D(formulaIndex);
 		
 		Graph formulaGraph = null;
 		try {
@@ -81,9 +81,9 @@ public class DataFill {
 		return smilesGraph.toSmiles();
 	}
 	
-	public static String createFormula(Data2D<String> data, ArrayList<String> line) throws IOException {
+	public static String createFormula(Data2D<String> data, Data1D<String> line) throws IOException {
 		int smilesIndex = data.getColIndex(smiles);
-		String smiles = line.get(smilesIndex);
+		String smiles = line.getValue1D(smilesIndex);
 		
 		Graph smilesGraph = null;
 		try {
@@ -97,23 +97,23 @@ public class DataFill {
 		return formulaGraph.toSmiles();
 	}
 	
-	public static String createCondensedFormula(Data2D<String> data, ArrayList<String> line) {
+	public static String createCondensedFormula(Data2D<String> data, Data1D<String> line) {
 		int formulaIndex = data.getColIndex(formula);
-		String formula = line.get(formulaIndex);
+		String formula = line.getValue1D(formulaIndex);
 		
 		return CondensedFormula.getCondensedFormula(formula);
 	}
 	
-	public static String createFamily(Data2D<String> data, ArrayList<String> line) {
+	public static String createFamily(Data2D<String> data, Data1D<String> line) {
 		int condensedFormulaIndex = data.getColIndex(condensed_formula);
-		String condensedFormula = line.get(condensedFormulaIndex);
+		String condensedFormula = line.getValue1D(condensedFormulaIndex);
 		
 		return CondensedFormula.getMoleculeCategory(condensedFormula);
 	}
 	
-	public static String createSubFamily(Data2D<String> data, ArrayList<String> line) {
+	public static String createSubFamily(Data2D<String> data, Data1D<String> line) {
 		int condensedFormulaIndex = data.getColIndex(condensed_formula);
-		String condensedFormula = line.get(condensedFormulaIndex);
+		String condensedFormula = line.getValue1D(condensedFormulaIndex);
 		
 		return CondensedFormula.getSubCategory(condensedFormula);
 	}
