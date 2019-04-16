@@ -75,6 +75,9 @@ public class Molecule {
 	}
 	
 	public Molecule(Data1D<String> data) {
+		if(data == null)
+			return;
+		
 		properties = data;	
 		
 		addIdentifier(Identifier.NAME, properties.getValue1D("Name"));
@@ -172,6 +175,9 @@ public class Molecule {
 	
 	public String getPropsAsString() {
 		String s = "";
+		if(properties == null)
+			return s;
+		
 		for(String v : properties.getData1D()) {
 			s += v + ", ";
 		}

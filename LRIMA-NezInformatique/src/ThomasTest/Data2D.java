@@ -30,6 +30,7 @@ public class Data2D<E> {
 					return list;
 			}
 		}
+		System.out.println("La ligne n'a pas été trouvée");
 		return null;
 	}
 	

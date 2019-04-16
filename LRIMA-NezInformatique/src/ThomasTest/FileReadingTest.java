@@ -5,12 +5,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import javax.swing.JOptionPane;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import Main.Molecule;
-import Main.Molecule.Identifier;
 
 public class FileReadingTest {
 	
@@ -47,7 +44,7 @@ public class FileReadingTest {
 //		Molecule ethylene = new Molecule(mainData.getLine("Ethylene"), mainData.getIndexMap());
 //		System.out.print(ethylene + "\n" + ethylene.getIdentifier(Identifier.SMILES));
 		
-		Molecule Adamantane = new Molecule(mainData.getLine("Adamantane"));
+		Molecule Adamantane = new Molecule(mainData.getLine("xyz"));
 		System.out.println("\n\n" + Adamantane);
 		System.out.println(Adamantane.toStringLong());
 	}
