@@ -1,4 +1,4 @@
-package ThomasTest;
+package fileReading;
 
 import java.util.ArrayList;
 import java.util.HashMap;

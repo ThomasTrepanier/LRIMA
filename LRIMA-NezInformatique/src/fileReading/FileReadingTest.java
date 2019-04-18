@@ -1,4 +1,4 @@
-package ThomasTest;
+package fileReading;
 
 import java.io.File;
 import java.io.IOException;

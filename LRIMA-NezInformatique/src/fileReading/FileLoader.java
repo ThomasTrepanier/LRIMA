@@ -1,4 +1,4 @@
-package ThomasTest;
+package fileReading;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,7 +73,7 @@ public class FileLoader {
 					data = "";
 				}
 				else if(c == delimiter) {
-					nextArray.addData(data);
+					nextArray.addValue(data);
 					data = "";
 				} else {
 					data += c;
@@ -103,9 +103,9 @@ public class FileLoader {
 					for(int c = 0; c < cells; c++) {
 						Cell cell = row.getCell(c);
 						if(cell != null) {
-							line.addRangeData(c, cell.toString());
+							line.addValueAtRange(c, cell.toString());
 						} else
-							line.addRangeData(c, "");;
+							line.addValueAtRange(c, "");;
 					}
 					dataLoaded.add(line);
 				}
@@ -126,9 +126,9 @@ public class FileLoader {
 				for(int c = 0; c < cells; c++) {
 					Cell cell = row.getCell(c);
 					if(cell != null) {
-						line.addRangeData(c, cell.toString());
+						line.addValueAtRange(c, cell.toString());
 					} else
-						line.addRangeData(c, "");
+						line.addValueAtRange(c, "");
 				}
 				dataLoaded.add(line);
 			}

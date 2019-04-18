@@ -10,9 +10,9 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import MolecularProperties.ChemicoPhysicalProperties;
 import MolecularProperties.MolecularProperties_Chemical;
 import MolecularProperties.MolecularProperties_Physical;
-import ThomasTest.Data1D;
-import ThomasTest.Data2D;
-import ThomasTest.Utils;
+import fileReading.Data1D;
+import fileReading.Data2D;
+import fileReading.Utils;
 import uk.ac.ebi.beam.*;
 /**
  * Base class of all molecules
