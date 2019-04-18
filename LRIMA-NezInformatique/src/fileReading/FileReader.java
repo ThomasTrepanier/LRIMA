@@ -59,7 +59,8 @@ public class FileReader<E> {
 	}
 	
 	/**
-	 * Probably useless 
+	 * Probably useless
+	 * @deprecated 
 	 */
 	@Deprecated
 	private static Scanner createScanner(String fileName) throws FileNotFoundException {
