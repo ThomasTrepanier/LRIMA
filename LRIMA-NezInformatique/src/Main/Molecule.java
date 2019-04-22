@@ -138,6 +138,149 @@ public class Molecule {
 	}
 	
 	/**
+	 * @return the number of atom of H in the SMILES
+	 */
+	public int nbH(String smiles) {
+		int nb = 0;
+		for (int k = 0; k < smiles.length(); k++) {
+			if(smiles.charAt(k)=='H') {
+				nb++;
+			}
+		}
+		return nb;
+	}
+	
+	/**
+	 * @return the number of atom of B in the SMILES
+	 */
+	public int nbB(String smiles) {
+		int nb = 0;
+		for (int k = 0; k < smiles.length(); k++) {
+			if(smiles.charAt(k)=='B') {
+				nb++;
+			}
+		}
+		return nb;
+	}
+	
+	/**
+	 * @return the number of atom of C in the SMILES
+	 */
+	public int nbC(String smiles) {
+		int nb = 0;
+		for (int k = 0; k < smiles.length(); k++) {
+			if(smiles.charAt(k)=='C') {
+				nb++;
+			}
+		}
+		return nb;
+	}
+	
+	/**
+	 * @return the number of atom of N in the SMILES
+	 */
+	public int nbN(String smiles) {
+		int nb = 0;
+		for (int k = 0; k < smiles.length(); k++) {
+			if(smiles.charAt(k)=='N') {
+				nb++;
+			}
+		}
+		return nb;
+	}
+	
+	/**
+	 * @return the number of atom of O in the SMILES
+	 */
+	public int nbO(String smiles) {
+		int nb = 0;
+		for (int k = 0; k < smiles.length(); k++) {
+			if(smiles.charAt(k)=='O') {
+				nb++;
+			}
+		}
+		return nb;
+	}
+	
+	/**
+	 * @return the number of atom of F in the SMILES
+	 */
+	public int nbF(String smiles) {
+		int nb = 0;
+		for (int k = 0; k < smiles.length(); k++) {
+			if(smiles.charAt(k)=='F') {
+				nb++;
+			}
+		}
+		return nb;
+	}
+	
+	/**
+	 * @return the number of atom of P in the SMILES
+	 */
+	public int nbP(String smiles) {
+		int nb = 0;
+		for (int k = 0; k < smiles.length(); k++) {
+			if(smiles.charAt(k)=='P') {
+				nb++;
+			}
+		}
+		return nb;
+	}
+	
+	/**
+	 * @return the number of atom of S in the SMILES
+	 */
+	public int nbS(String smiles) {
+		int nb = 0;
+		for (int k = 0; k < smiles.length(); k++) {
+			if(smiles.charAt(k)=='S') {
+				nb++;
+			}
+		}
+		return nb;
+	}
+	
+	/**
+	 * @return the number of atom of Cl in the SMILES
+	 */
+	public int nbCl(String smiles) {
+		int nb = 0;
+		for (int k = 0; k < smiles.length()-1; k++) {
+			if(smiles.substring(k,k+2).equals("Cl")) {
+				nb++;
+			}
+		}
+		return nb;
+	}
+	
+	/**
+	 * @return the number of atom of Br in the SMILES
+	 */
+	public int nbBr(String smiles) {
+		int nb = 0;
+		for (int k = 0; k < smiles.length()-1; k++) {
+			if(smiles.substring(k,k+2).equals("Br")) {
+				nb++;
+			}
+		}
+		return nb;
+	}
+	
+	/**
+	 * @return the number of atom of I in the SMILES
+	 */
+	public int nbI(String smiles) {
+		int nb = 0;
+		for (int k = 0; k < smiles.length(); k++) {
+			if(smiles.charAt(k)=='I') {
+				nb++;
+			}
+		}
+		return nb;
+	}
+
+	/**
 	 * Loads the Chemico-Physical Properties of the molecule
 	 */
 	public void loadChemPhysProperties() {

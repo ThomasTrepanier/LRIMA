@@ -49,9 +49,16 @@ public class Resources {
 	
 	private void initAtomNumbers() {
 		atomNumbers.put("H", 1);
-		atomNumbers.put("C", 12);
-		atomNumbers.put("N", 14);
-		atomNumbers.put("O", 16);
+		atomNumbers.put("B", 5);
+		atomNumbers.put("C", 6);
+		atomNumbers.put("N", 7);
+		atomNumbers.put("O", 8);
+		atomNumbers.put("F", 9);
+		atomNumbers.put("P", 15);
+		atomNumbers.put("S", 16);
+		atomNumbers.put("Cl", 17);
+		atomNumbers.put("Br", 35);
+		atomNumbers.put("I", 53);
 	}
 	private void initSmilesChar() {
 		
