@@ -153,11 +153,13 @@ public class Molecule {
 		return this.smilesValue;
 	}
 	
-	/** TODO
-	 * Calculates the SMILES value of the SMILES (molecule value)
+	/**
+	 * TODO Calculates the SMILES value of the SMILES (molecule value)
 	 */
 	public void calculateSmilesValue() {
-		
+		String smiles = identifiers.get(Identifier.SMILES);
+		this.smilesValue = (nbC(smiles) * 75 + nbN(smiles) * 50 + nbO(smiles) * 25 + nbP(smiles) * 15 + nbS(smiles) * 10
+				+ nbI(smiles) * 5 + nbBr(smiles) * 4 + nbCl(smiles) * 3 + nbF(smiles) * 2 + nbB(smiles) * 1) / 10000;
 	}
 	
 	/**
