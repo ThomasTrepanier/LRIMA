@@ -38,6 +38,7 @@ public class FileReadingTest {
 		for(String s : mainData.getIndexMap().keySet()) {
 			System.out.print(s + ", ");
 		}
+		System.out.println();
 //		Molecule aldehyde = new Molecule(mainData.getLine("Aldehyde"), mainData.getIndexMap());
 //		System.out.println("\n" + aldehyde);
 //		
@@ -45,7 +46,7 @@ public class FileReadingTest {
 //		System.out.print(ethylene + "\n" + ethylene.getIdentifier(Identifier.SMILES));
 		
 		Molecule Adamantane = new Molecule(mainData.getLine("xyz"));
-		System.out.println("\n\n" + Adamantane);
+		System.out.println("\n" + Adamantane);
 		System.out.println(Adamantane.toStringLong());
 	}
 	
