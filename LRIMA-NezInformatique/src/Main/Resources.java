@@ -54,6 +54,10 @@ public class Resources {
 		atomNumbers.put("N", 7);
 		atomNumbers.put("O", 8);
 		atomNumbers.put("F", 9);
+		atomNumbers.put("N", 7);
+		atomNumbers.put("O", 8);
+		atomNumbers.put("F", 9);
+		atomNumbers.put("C", 12);
 		atomNumbers.put("P", 15);
 		atomNumbers.put("S", 16);
 		atomNumbers.put("Cl", 17);
