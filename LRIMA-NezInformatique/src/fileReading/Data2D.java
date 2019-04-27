@@ -1,7 +1,21 @@
 package fileReading;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Class that stores a 2 dimensionnal array of information
@@ -139,6 +153,34 @@ public class Data2D<E> {
 				System.out.print(value + ";");
 			}
 			System.out.println("]");
+		}
+	}
+	
+	public void writeInExcelFile(String file, String sheetName) throws IOException, InvalidFormatException {
+		try(InputStream inp = new FileInputStream(file)){
+			Workbook workbook = WorkbookFactory.create(inp);
+			XSSFSheet sheet = (XSSFSheet) workbook.createSheet(sheetName);
+			
+			int rowNum = 0;
+			for(int i = 0; i < data2D.size(); i++) {
+				Row row = sheet.createRow(rowNum++);
+				int colNum = 0;
+				Data1D<E> line = data2D.get(i);
+				for(int j = 0; j < line.getDataSize(); j++) {
+					Cell cell = row.createCell(colNum++);
+					E element = line.getValue1D(j);
+					cell.setCellValue(element.toString());
+				}
+			}
+			try {
+	            FileOutputStream outputStream = new FileOutputStream(file);
+	            workbook.write(outputStream);
+	            workbook.close();
+	        } catch (FileNotFoundException e) {
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
 		}
 	}
 }

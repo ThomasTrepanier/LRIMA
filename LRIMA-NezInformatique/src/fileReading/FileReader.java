@@ -76,7 +76,7 @@ public class FileReader<E> {
 	 * @throws IOException
 	 * @throws InvalidFormatException
 	 */
-	private static Workbook createWorkbook(File file) throws IOException, InvalidFormatException {
+	public static Workbook createWorkbook(File file) throws IOException, InvalidFormatException {
 		OPCPackage pkg = OPCPackage.open(file);
 		XSSFWorkbook wb = new XSSFWorkbook(pkg);
 		return wb;
