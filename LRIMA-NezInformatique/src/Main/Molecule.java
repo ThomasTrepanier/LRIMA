@@ -158,8 +158,8 @@ public class Molecule {
 	 */
 	public void calculateSmilesValue() {
 		String smiles = identifiers.get(Identifier.SMILES);
-		this.smilesValue = (nbC(smiles) * 75 + nbN(smiles) * 50 + nbO(smiles) * 25 + nbP(smiles) * 15 + nbS(smiles) * 10
-				+ nbI(smiles) * 5 + nbBr(smiles) * 4 + nbCl(smiles) * 3 + nbF(smiles) * 2 + nbB(smiles) * 1) / 10000;
+		this.smilesValue = (nbC(smiles) * 6 + nbN(smiles) * 7 + nbO(smiles) * 8 + nbP(smiles) * 15 + nbS(smiles) * 16
+				+ nbI(smiles) * 53 + nbBr(smiles) * 35 + nbCl(smiles) * 17 + nbF(smiles) * 9 + nbB(smiles) * 5) / 1000;
 	}
 	
 	/**
@@ -181,7 +181,8 @@ public class Molecule {
 	public int nbB(String smiles) {
 		int nb = 0;
 		for (int k = 0; k < smiles.length(); k++) {
-			if(smiles.charAt(k)=='B') {
+			if(smiles.charAt(k)=='B') 
+			{
 				nb++;
 			}
 		}
