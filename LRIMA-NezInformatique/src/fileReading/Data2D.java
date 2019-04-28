@@ -159,7 +159,12 @@ public class Data2D<E> {
 	public void writeInExcelFile(String file, String sheetName) throws IOException, InvalidFormatException {
 		try(InputStream inp = new FileInputStream(file)){
 			Workbook workbook = WorkbookFactory.create(inp);
-			XSSFSheet sheet = (XSSFSheet) workbook.createSheet(sheetName);
+			XSSFSheet sheet = (XSSFSheet) workbook.getSheet(sheetName);
+			if(sheet == null) {
+				sheet = (XSSFSheet) workbook.createSheet(sheetName);
+			} else {
+				sheet = (XSSFSheet) workbook.createSheet(sheetName + (Math.random() * 1000));
+			}
 			
 			int rowNum = 0;
 			for(int i = 0; i < data2D.size(); i++) {
