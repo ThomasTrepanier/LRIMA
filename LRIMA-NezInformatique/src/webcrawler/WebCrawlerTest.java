@@ -41,7 +41,7 @@ public class WebCrawlerTest {
 		String id = "bodyContent0";
 		
 		//Load data from URL
-		List<String> molecules = getElementsFromFullSense(url, id, 10000);
+		List<String> molecules = getElementsFromFullSense(url, id, 20000);
 		for(String s : molecules) {
 			System.out.println(s);
 		}
@@ -83,7 +83,7 @@ public class WebCrawlerTest {
 	
 	private static WebDriver initWebDriver() {
 		String projectDir = System.getProperty("user.dir");
-		System.setProperty("webdriver.chrome.driver", projectDir + "/lib/chromedriver/chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", projectDir + "/lib/chromedriver/chromedriver74.exe");
 		return new ChromeDriver();
 	}
 	
@@ -138,7 +138,7 @@ public class WebCrawlerTest {
 	
 	public static ArrayList<String> getElementsFromFullSense(String url, String id, int timeout) throws IOException {
 		ArrayList<String> list = new ArrayList<String>();
-		Document doc = Jsoup.connect(url).timeout(1000).get();
+		Document doc = Jsoup.connect(url).timeout(timeout).get();
 		Element content = doc.getElementById(id);
 		List<Node> nodes = content.childNodes();
 		String nodeId = "title=";
