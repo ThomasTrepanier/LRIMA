@@ -1,5 +1,6 @@
 package webcrawler;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,6 +21,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import fileReading.Data1D;
 import fileReading.Data2D;
+import fileReading.ExcelSheetCompiler;
+import fileReading.FileReader;
 import fileReading.Utils;
 import uk.ac.ebi.beam.Functions;
 import uk.ac.ebi.beam.Graph;
@@ -32,6 +35,7 @@ public class WebCrawlerTest {
 	//https://sciencestruck.com/organic-compounds-list
 	//https://www.jagranjosh.com/general-knowledge/list-of-important-organic-compounds-1456306311-1
 	static String folderPath = "Data/";
+	static String file = "test_data.xlsx";
 	final static String PUBCHEM_URL = "https://pubchem.ncbi.nlm.nih.gov/";
 	final static String searchID = "search_1556195705352";
 	public static void main(String[] args) throws IOException, InterruptedException, InvalidFormatException {
@@ -41,13 +45,13 @@ public class WebCrawlerTest {
 		String id = "bodyContent0";
 		
 		//Load data from URL
-		List<String> molecules = getElementsFromFullSense(url, id, 20000);
-		for(String s : molecules) {
-			System.out.println(s);
-		}
-		
-		WebDriver driver = initWebDriver();
-		driver.get(webPage);
+//		List<String> molecules = getElementsFromFullSense(url, id, 20000);
+//		for(String s : molecules) {
+//			System.out.println(s);
+//		}
+//		
+//		WebDriver driver = initWebDriver();
+//		driver.get(webPage);
 		
 		//TEST
 //		driver.navigate().to("http://www.fullsense.com/Application/ChemicalOrganic/List_of_organic_compounds.htm");
@@ -55,30 +59,35 @@ public class WebCrawlerTest {
 //		System.out.println(mainResults.getText());
 //		System.exit(0);
 		
-		ArrayList<Data1D<String>> moleculesData = new ArrayList<Data1D<String>>();
-		//First line for Identifiers
-		ArrayList<String> firstLine = new ArrayList<String>();
-		firstLine.add("Name");
-		firstLine.add("SMILES");
-		Data1D<String> firstLineData1D = new Data1D<String>(firstLine);
-		moleculesData.add(firstLineData1D);
-		firstLineData1D = null;
-		firstLine = null;
+//		ArrayList<Data1D<String>> moleculesData = new ArrayList<Data1D<String>>();
+//		//First line for Identifiers
+//		ArrayList<String> firstLine = new ArrayList<String>();
+//		firstLine.add("Name");
+//		firstLine.add("SMILES");
+//		Data1D<String> firstLineData1D = new Data1D<String>(firstLine);
+//		moleculesData.add(firstLineData1D);
+//		firstLineData1D = null;
+//		firstLine = null;
+//		
+//		//Load all molecules from page
+//		for(int i = 0; i < molecules.size(); i++) {
+//			String s = molecules.get(i);
+//			ArrayList<String> line = getNameAndSmiles(driver, s);
+//			if(line != null) {
+//				Data1D<String> dataLine = new Data1D<String>(line);
+//				moleculesData.add(dataLine);
+//			}
+//		}
+//		//Put them all in 2D array
+//		Data2D<String> data = new Data2D<String>(moleculesData);
+//		data.writeInExcelFile(folderPath + file, "FullSense");
 		
-		//Load all molecules from page
-		for(int i = 0; i < molecules.size(); i++) {
-			String s = molecules.get(i);
-			ArrayList<String> line = getNameAndSmiles(driver, s);
-			if(line != null) {
-				Data1D<String> dataLine = new Data1D<String>(line);
-				moleculesData.add(dataLine);
-			}
-		}
-		//Put them all in 2D array
-		Data2D<String> data = new Data2D<String>(moleculesData);
-		data.writeInExcelFile(folderPath + "test_data.xlsx", "FullSense");
-		data.print2DArray();
-		driver.quit();
+		//Puts them all in one sheet with no duplicates
+		ExcelSheetCompiler.compileDataSheet(folderPath + file, "Main");
+		//Loads them in Data2D array to fill
+		Data2D<String> filledData = FileReader.readDataFile(new File(folderPath + file), "Main");
+		filledData.writeInExcelFile(folderPath + file, "Main Filled");
+		//driver.quit();
 	}
 	
 	private static WebDriver initWebDriver() {

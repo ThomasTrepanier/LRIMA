@@ -128,7 +128,7 @@ public class CondensedFormula {
 		return subCategory;
 	}
 	public static String CategoryHydrocarbon(String condensedFormula) {
-		if(!getMoleculeCategory(condensedFormula).equals("hydrocarbon")) //Not an hydrocarbon
+		if(!getMoleculeCategory(condensedFormula).equals("hydrocarbon") || condensedFormula.equals("")) //Not an hydrocarbon
 			return "";
 		
 		String category;
@@ -173,7 +173,7 @@ public class CondensedFormula {
 	}
 
 	public static String CategoryOxygen(String condensedFormula) {
-		if(!getMoleculeCategory(condensedFormula).equals("oxygen")) //Not an oxygene
+		if(!getMoleculeCategory(condensedFormula).equals("oxygen") || condensedFormula.equals("")) //Not an oxygene
 			return "";
 		
 		String category;

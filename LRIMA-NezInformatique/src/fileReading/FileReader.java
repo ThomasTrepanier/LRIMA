@@ -46,6 +46,13 @@ public class FileReader<E> {
 		return data;
 	}
 	
+	public static Data2D<String> readDataFile(File file, String sheetName) throws InvalidFormatException, IOException{
+		Workbook dataWorkbook = createWorkbook(file);
+		Data2D<String> data = FileLoader.loadFileIn2D(dataWorkbook.getSheet(sheetName));
+		DataFill.fillMissingMoleculeData(data);
+		return data;
+	}
+	
 	/**
 	 * Creates a {@link HashMap} containing the atomic symbol and the equivalent atomic number of all atoms
 	 * @param file - File containing the information

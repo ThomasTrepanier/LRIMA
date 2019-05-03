@@ -16,6 +16,7 @@ import uk.ac.ebi.beam.Graph;
  */
 public class DataFill {
 	
+	static ArrayList<String> indexes;
 	static String name = "Name";
 	static String smiles = "SMILES";
 	static String formula = "Formula";
@@ -23,26 +24,54 @@ public class DataFill {
 	static String family = "Family";
 	static String sub_fam = "Sub-Family";
 	
+	public static ArrayList<String> initIndexes() {
+		indexes = new ArrayList<String>();
+		indexes.add(name);
+		indexes.add(smiles);
+		indexes.add(formula);
+		indexes.add(condensed_formula);
+		indexes.add(family);
+		indexes.add(sub_fam);
+		return indexes;
+	}
+	
+	public static void verifyIndexRowIntegrity(Data2D<String> data) {
+		Data1D<String> indexLine = data.getLine(0);
+		for(String index : indexes) {
+			if(!indexLine.getData1D().contains(index)) {
+				indexLine.addValue(index);
+			}
+		}
+	}
+	
 	/**
 	 * Main class to call to fill the data
 	 * @param data - Dataset to fill
 	 * @throws IOException
 	 */
 	public static void fillMissingMoleculeData(Data2D<String> data) throws IOException {
+		initIndexes();
+		verifyIndexRowIntegrity(data);
+		
 		ArrayList<Data1D<String>> list2D = data.getData();
 		
 		for(int l = 0; l < list2D.size(); l++) {
 			Data1D<String> list = list2D.get(l);
 			if(list != null) {
-				for(int i = 0; i < list.getDataSize(); i++) {
-					String value = list.getValue1D(i);
+				for(int i = 0; i < indexes.size(); i++) {
+					String value = "";
+					if(i < list.getDataSize())
+						value = list.getValue1D(i);
 					if(value.equals("")) {
 						if(i == 0) { //Throw error, because can't not have the name
 							System.out.println("Name not present at " + l + "," + i);
 						} else {
 							String keyType = getKeyType(data, i);
 							String newValue = fillCell(data, list, keyType);
-							list.removeValue(i);
+							
+							if(i < list.getDataSize())
+								list.removeValue(i);
+							
 							list.addValueAtRange(i, newValue);
 						}
 					}
@@ -130,9 +159,16 @@ public class DataFill {
 			smilesGraph = Graph.fromSmiles(smiles);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			return "";
 		}
-		Graph formulaGraph = Functions.expand(smilesGraph);
+		Graph formulaGraph = null;
+		try {
+			formulaGraph = Functions.expand(smilesGraph);
+		} catch (Exception e) {
+			//e.printStackTrace();
+			return "";
+		}
 		
 		return formulaGraph.toSmiles();
 	}
