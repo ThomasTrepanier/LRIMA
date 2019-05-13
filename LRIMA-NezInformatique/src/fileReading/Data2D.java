@@ -138,6 +138,9 @@ public class Data2D<E> {
 		return colIndexMap.get(value);
 	}
 	
+	public int getDataSize() {
+		return data2D.size();
+	}
 	/**
 	 * Prints the dataset in the console
 	 */

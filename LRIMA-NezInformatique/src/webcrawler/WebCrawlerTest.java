@@ -90,7 +90,7 @@ public class WebCrawlerTest {
 		//driver.quit();
 	}
 	
-	private static WebDriver initWebDriver() {
+	public static WebDriver initWebDriver() {
 		String projectDir = System.getProperty("user.dir");
 		System.setProperty("webdriver.chrome.driver", projectDir + "/lib/chromedriver/chromedriver74.exe");
 		return new ChromeDriver();
@@ -312,7 +312,13 @@ public class WebCrawlerTest {
 		return element;
 	}
 	public static List<WebElement> getElementsExplicitWait(WebDriver driver, By by){
-		return (new WebDriverWait(driver, 10)).
+		List<WebElement> elements = null;
+		try {
+			elements = new WebDriverWait(driver, 10).
 				until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
+		} catch (Exception e) {
+			System.out.println("Waited and didnt't find elements");
+		}
+		return elements;
 	}
 }
