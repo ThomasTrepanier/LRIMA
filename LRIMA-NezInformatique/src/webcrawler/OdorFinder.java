@@ -46,20 +46,20 @@ public class OdorFinder {
 		for(int i = 1; i < data.getDataSize(); i++) {
 			Data1D<String> line = data.getLine(i);
 			
-			WebElement inputName = WebCrawlerTest.getElementExplicitWait(driver, By.id(inputID));
+			WebElement inputName = WebCrawlerTest.getElementExplicitWait(driver, By.id(inputID), 10);
 			String name = line.getValue1D(0);
 			writeInWebElement(inputName, name);
 			
-			WebElement submitButton = WebCrawlerTest.getElementExplicitWait(driver, By.className(buttonName));
+			WebElement submitButton = WebCrawlerTest.getElementExplicitWait(driver, By.className(buttonName), 10);
 			submitButton.click();
 			
-			List<WebElement> oddRes = WebCrawlerTest.getElementsExplicitWait(driver, By.className("odd"));
+			List<WebElement> oddRes = WebCrawlerTest.getElementsExplicitWait(driver, By.className("odd"), 10);
 			if(oddRes.get(0).getText().contains("No data available in table")) {
 				driver.get(url);
 				continue;
 			}
 			
-			List<WebElement> evenRes = WebCrawlerTest.getElementsExplicitWait(driver, By.className("even"));
+			List<WebElement> evenRes = WebCrawlerTest.getElementsExplicitWait(driver, By.className("even"), 10);
 			ArrayList<WebElement> results = new ArrayList<WebElement>();
 			if(oddRes != null)
 				results.addAll(oddRes);

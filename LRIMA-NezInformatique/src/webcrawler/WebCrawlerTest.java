@@ -207,7 +207,7 @@ public class WebCrawlerTest {
 	public static String getNameOnPage(WebDriver driver) {
 		WebElement nameElement = null;
 		try {
-			nameElement = getElementExplicitWait(driver, By.className("p-sm-top"));
+			nameElement = getElementExplicitWait(driver, By.className("p-sm-top"), 10);
 		} catch (NoSuchElementException e) {
 			System.out.println("Couldn't find name on page");
 			return "";
@@ -229,7 +229,7 @@ public class WebCrawlerTest {
 	public static String getCanonicalSmilesFromPage(WebDriver driver) {
 		WebElement smilesElement = null;
 		try {
-			smilesElement = getElementExplicitWait(driver, By.id("Canonical-SMILES"));
+			smilesElement = getElementExplicitWait(driver, By.id("Canonical-SMILES"), 10);
 		} catch (NoSuchElementException e) {
 			//e.printStackTrace();
 			System.out.println("Couldn't find canonical Smiles in page " + driver.getCurrentUrl());
@@ -241,7 +241,7 @@ public class WebCrawlerTest {
 	public static String getIsomericSmilesFromPage(WebDriver driver) {
 		WebElement smilesElement = null;
 		try {
-			smilesElement = getElementExplicitWait(driver, By.id("Isomeric-SMILES"));
+			smilesElement = getElementExplicitWait(driver, By.id("Isomeric-SMILES"), 10);
 		} catch (NoSuchElementException e) {
 			System.out.println("Couldn't find isomeric Smiles in page " + driver.getCurrentUrl());
 			return "";
@@ -267,7 +267,7 @@ public class WebCrawlerTest {
 	public static boolean searchForIdentifier(WebDriver driver, String q) {
 		WebElement searchBar = null;
 		try {
-			searchBar = getElementExplicitWait(driver, By.cssSelector("input"));
+			searchBar = getElementExplicitWait(driver, By.cssSelector("input"), 10);
 		} catch (NoSuchElementException e) {
 			System.out.println("Couldn't find search bar in page " + driver.getCurrentUrl());
 			return false;
@@ -279,7 +279,7 @@ public class WebCrawlerTest {
 	
 	//DOESNT WORK FOR NO REASION
 	public static boolean hasResults(WebDriver driver) {
-		WebElement mainResults = getElementExplicitWait(driver, By.id("main-results"));
+		WebElement mainResults = getElementExplicitWait(driver, By.id("main-results"), 10);
 		//System.out.println(mainResults.getText());
 		if(!mainResults.getText().equals("0 results found...")) {
 			clickOnBestIdentifier(driver);
@@ -292,7 +292,7 @@ public class WebCrawlerTest {
 	public static void clickOnBestIdentifier(WebDriver driver) {
 		WebElement result = null;
 		try {
-			List<WebElement> results = getElementsExplicitWait(driver, By.className("breakword"));
+			List<WebElement> results = getElementsExplicitWait(driver, By.className("breakword"), 10);
 			if(results.size() > 0)
 				result = results.get(0);
 		} catch (Exception e) {
@@ -302,22 +302,22 @@ public class WebCrawlerTest {
 		result.click();
 	}
 	
-	public static WebElement getElementExplicitWait(WebDriver driver, By by) {
+	public static WebElement getElementExplicitWait(WebDriver driver, By by, int timeout) {
 		WebElement element = null;
 		try {
-			element = new WebDriverWait(driver, 10).until(ExpectedConditions.presenceOfElementLocated(by));
+			element = new WebDriverWait(driver, timeout).until(ExpectedConditions.presenceOfElementLocated(by));
 		} catch (Exception e) {
-			System.out.println("Waited and didn't find element");
+			System.out.println("Waited and didn't find element " + by);
 		}
 		return element;
 	}
-	public static List<WebElement> getElementsExplicitWait(WebDriver driver, By by){
+	public static List<WebElement> getElementsExplicitWait(WebDriver driver, By by, int timeout){
 		List<WebElement> elements = null;
 		try {
-			elements = new WebDriverWait(driver, 10).
+			elements = new WebDriverWait(driver, timeout).
 				until(ExpectedConditions.presenceOfAllElementsLocatedBy(by));
 		} catch (Exception e) {
-			System.out.println("Waited and didnt't find elements");
+			System.out.println("Waited and didnt't find elements " + by);
 		}
 		return elements;
 	}

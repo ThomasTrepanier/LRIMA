@@ -1,0 +1,161 @@
+package webcrawler;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import fileReading.Data1D;
+import fileReading.Data2D;
+
+public class SigmaAldrichParser {
+	
+	static String folderPath = "Data/";
+	static String file = "test_data.xlsx";
+	static String letterLinkPartial = "/etc/controller/controller-page";
+	public static void main(String[] args) throws InvalidFormatException, IOException {
+		String url = "https://www.sigmaaldrich.com/chemistry/chemistry-products.html?TablePage=15575210";
+		
+		ArrayList<Data1D<String>> sigmaFoundList = new ArrayList<Data1D<String>>();
+		String[] identifiers = {"Name", "Odor(s)"};
+		sigmaFoundList.add(new Data1D<String>(identifiers));
+		
+		WebDriver driver = WebCrawlerTest.initWebDriver();
+		driver.get(url);
+		
+		for(int n = 0; n < 10; n++) {
+			removePopUp(driver);
+			
+			int idLetter = (int) (Math.random() * (8));
+			boolean catChose = clickLinkFromLetter(driver, idLetter);
+			removePopUp(driver);
+			
+			if(catChose) {
+				List<WebElement> molecules = WebCrawlerTest.getElementsExplicitWait(driver, By.tagName("tr"), 8);
+				removeAllSeparator(molecules);
+				int idMolecule = (int) (Math.random() * molecules.size());
+				WebElement molecule = molecules.get(idMolecule);
+				molecule.findElements(By.tagName("td")).get(0).click();
+				removePopUp(driver);
+				
+				WebElement showHide = WebCrawlerTest.getElementExplicitWait(driver, By.className("showHideToggle"), 8);
+				if(showHide != null) {
+					WebElement showHideButton = showHide.findElement(By.tagName("a"));
+					if(showHideButton != null) {
+						showHideButton.click();
+						removePopUp(driver);
+					} else {
+						driver.navigate().to(url);
+						n--;
+						continue;
+					}
+				} else {
+					driver.navigate().to(url);
+					n--;
+					continue;
+				}
+					
+				
+				WebElement nameElement = WebCrawlerTest.getElementExplicitWait(driver, By.tagName("h1"), 8);
+				String name = nameElement.getText();
+				
+				List<WebElement> propertiesName = WebCrawlerTest.getElementsExplicitWait(driver, By.className("lft"), 8);
+				int organolepticId = -1;
+				for(int i = 0; i < propertiesName.size(); i++) {
+					WebElement e = propertiesName.get(i);
+					if(e.getText().contains("Organoleptic")) {
+						organolepticId = i;
+					}
+				}
+				
+				List<WebElement> propertiesValue = WebCrawlerTest.getElementsExplicitWait(driver, By.className("rgt"), 8);
+				String organoleptic = propertiesValue.get(organolepticId).getText();
+				
+				if(organoleptic.equals("") || organoleptic.equals("odorless")) {
+					driver.navigate().to(url);
+					n--;
+					continue;
+				}
+					
+				System.out.println(name + ": " + organoleptic);
+				String[] info = {name, organoleptic};
+				Data1D<String> line = new Data1D<String>(info);
+				sigmaFoundList.add(line);
+				driver.navigate().to(url);
+			}
+		}
+		Data2D<String> data = new Data2D<String>(sigmaFoundList);
+		data.writeInExcelFile(folderPath + file, "SigmaAldrich");
+		driver.close();
+	}
+	
+	public static boolean clickLinkFromLetter(WebDriver driver, int nb) {
+		WebElement link = null;
+		System.out.println(nb);
+		switch(nb) {
+		case(0):
+			link = WebCrawlerTest.getElementExplicitWait(driver, By.partialLinkText("A-B"), 8);
+			break;
+		case(1):
+			link = WebCrawlerTest.getElementExplicitWait(driver, By.partialLinkText("C-D"), 8);
+			break;
+		case(2):
+			link = WebCrawlerTest.getElementExplicitWait(driver, By.partialLinkText("E-F"), 8);
+			break;
+		case(3):
+			link = WebCrawlerTest.getElementExplicitWait(driver, By.partialLinkText("G-H"), 8);
+			break;
+		case(4):
+			link = WebCrawlerTest.getElementExplicitWait(driver, By.partialLinkText("I-L"), 8);
+			break;
+		case(5):
+			link = WebCrawlerTest.getElementExplicitWait(driver, By.partialLinkText("M-N"), 8);
+			break;
+		case(6):
+			link = WebCrawlerTest.getElementExplicitWait(driver, By.partialLinkText("O-P"), 8);
+			break;
+		case(7):
+			link = WebCrawlerTest.getElementExplicitWait(driver, By.partialLinkText("Q-Z"), 8);
+			break;
+		}
+		System.out.println(link.getText());
+		if(link != null) {
+			link.click();
+			return true;
+		} else
+			return false;
+	}
+
+	public static void removeAllSeparator(List<WebElement> list) {
+		List<WebElement> toRemove = new ArrayList<WebElement>();
+		for(WebElement we : list) {
+			if(we.getAttribute("class").equals("opcparow"))
+				toRemove.add(we);
+		}
+		list.removeAll(toRemove);
+	}
+	
+	public static void removePopUp(WebDriver driver) {
+		System.out.println("Removing pop-ups...");
+		
+		if(WebCrawlerTest.getElementExplicitWait(driver, By.id("fsrInvite"), 5) != null) {
+			List<WebElement> closeInvites = WebCrawlerTest.getElementsExplicitWait(driver, By.className("fsrAbandonButton"), 5);
+			if(closeInvites != null) {
+				for(WebElement e : closeInvites) {
+					e.click();
+					if(WebCrawlerTest.getElementExplicitWait(driver, By.id("fsrInvite"), 2) == null)
+						break;
+				}
+			}
+		}
+		if(WebCrawlerTest.getElementExplicitWait(driver, By.id("selectCountryHeader"), 5) != null) {
+			WebCrawlerTest.getElementExplicitWait(driver, By.partialLinkText("Canada (English)"), 5).click();;
+		}
+	}
+}

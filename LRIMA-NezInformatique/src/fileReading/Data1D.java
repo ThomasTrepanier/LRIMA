@@ -49,6 +49,13 @@ public class Data1D<E> {
 		colIndexMap = indexMap;
 	}
 	
+	public Data1D(E[] data) {
+		data1D = new ArrayList<E>();
+		colIndexMap = null;
+		for(int i = 0; i < data.length; i++) {
+			data1D.add(data[i]);
+		}
+	}
 	/**
 	 * Gets the value in the array at the specified index
 	 * @param index - Index to get value at
