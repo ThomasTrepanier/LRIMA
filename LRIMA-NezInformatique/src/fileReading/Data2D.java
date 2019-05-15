@@ -47,9 +47,10 @@ public class Data2D<E> {
 		for(int i = 0; i < data2D.get(0).getDataSize(); i++) {
 			this.colIndexMap.put(data2D.get(0).getValue1D(i), i);
 		}
-		
-		for(int i = 1; i < data2D.get(0).getDataSize(); i++) {
-			data2D.get(i).setIndexMap(this.colIndexMap);
+		if(data2D.get(0).getDataSize() > 1) {
+			for(int i = 1; i < data2D.get(0).getDataSize(); i++) {
+				data2D.get(i).setIndexMap(this.colIndexMap);
+			}
 		}
 	}
 	
