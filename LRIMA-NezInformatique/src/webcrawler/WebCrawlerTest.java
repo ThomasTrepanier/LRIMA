@@ -83,7 +83,7 @@ public class WebCrawlerTest {
 //		data.writeInExcelFile(folderPath + file, "FullSense");
 		
 		//Puts them all in one sheet with no duplicates
-		ExcelSheetCompiler.compileDataSheet(folderPath + file, "Main");
+		ExcelSheetCompiler.compileDataSheet(folderPath + file, "Main", 0, 2);
 		//Loads them in Data2D array to fill
 		Data2D<String> filledData = FileReader.readDataFile(new File(folderPath + file), "Main");
 		filledData.writeInExcelFile(folderPath + file, "Main Filled");
@@ -190,16 +190,18 @@ public class WebCrawlerTest {
 	public static ArrayList<String> getNameAndSmiles(WebDriver driver, String identifier) throws InterruptedException{
 		ArrayList<String> list = new ArrayList<String>();
 		String smiles = getSmilesFromHomePage(driver, identifier);
-		if(smiles.equals(""))
-			return null;
 		
-		String name = getNameOnPage(driver);
-		if(name.equals("")) {
-			list.add(identifier);
-		} else {
-			list.add(name);
-		}
+//		if(smiles.equals(""))
+//			return null;
 		
+//		String name = getNameOnPage(driver);
+//		if(name.equals("")) {
+//			
+//		} else {
+//			list.add(name);
+//		}
+		
+		list.add(identifier);
 		list.add(smiles);
 		return list;
 	}
@@ -228,21 +230,23 @@ public class WebCrawlerTest {
 	
 	public static String getCanonicalSmilesFromPage(WebDriver driver) {
 		WebElement smilesElement = null;
-		try {
-			smilesElement = getElementExplicitWait(driver, By.id("Canonical-SMILES"), 10);
-		} catch (NoSuchElementException e) {
+
+		smilesElement = getElementExplicitWait(driver, By.id("Canonical-SMILES"), 10);
+		
+		 if(smilesElement == null) {
 			//e.printStackTrace();
 			System.out.println("Couldn't find canonical Smiles in page " + driver.getCurrentUrl());
-			return getIsomericSmilesFromPage(driver);
+			String isomericSmiles = getIsomericSmilesFromPage(driver);
+			if(!isomericSmiles.equals(""))
+				return isomericSmiles;
 		}
 		return findSmilesInElement(smilesElement);
 	}
 	
 	public static String getIsomericSmilesFromPage(WebDriver driver) {
 		WebElement smilesElement = null;
-		try {
-			smilesElement = getElementExplicitWait(driver, By.id("Isomeric-SMILES"), 10);
-		} catch (NoSuchElementException e) {
+		smilesElement = getElementExplicitWait(driver, By.id("Isomeric-SMILES"), 10); 
+		if(smilesElement == null){
 			System.out.println("Couldn't find isomeric Smiles in page " + driver.getCurrentUrl());
 			return "";
 		}
@@ -295,11 +299,11 @@ public class WebCrawlerTest {
 			List<WebElement> results = getElementsExplicitWait(driver, By.className("breakword"), 10);
 			if(results.size() > 0)
 				result = results.get(0);
+			result.click();
 		} catch (Exception e) {
 			System.out.println("Coudln't find best result");
 			return;
 		}
-		result.click();
 	}
 	
 	public static WebElement getElementExplicitWait(WebDriver driver, By by, int timeout) {

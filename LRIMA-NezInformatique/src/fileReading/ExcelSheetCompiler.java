@@ -23,11 +23,11 @@ public class ExcelSheetCompiler {
 	
 	static ArrayList<String> indexes;
 	
-	public static void compileDataSheet(String fileName, String sheetName) throws FileNotFoundException, IOException, EncryptedDocumentException, InvalidFormatException {
+	public static void compileDataSheet(String fileName, String sheetName, int startSheetNb, int endSheetNb) throws FileNotFoundException, IOException, EncryptedDocumentException, InvalidFormatException {
 		try (InputStream inp = new FileInputStream(fileName)) {
 			Workbook workbook = WorkbookFactory.create(inp);
 			
-			compileDataSheet(workbook, sheetName);
+			compileDataSheet(workbook, sheetName, startSheetNb, endSheetNb);
 			
 			try {
 	            FileOutputStream outputStream = new FileOutputStream(fileName);
@@ -59,7 +59,7 @@ public class ExcelSheetCompiler {
 			}
 		}
 	}
-	public static void compileDataSheet(Workbook wb, String sheetName) {
+	public static void compileDataSheet(Workbook wb, String sheetName, int startSheetNb, int endSheetNb) {
 		ArrayList<XSSFCell[]> cellList = new ArrayList<XSSFCell[]>();
 		Sheet newSheet = null;
 		int lastRow = 0;
@@ -75,7 +75,14 @@ public class ExcelSheetCompiler {
 		Iterator<Sheet> it = wb.iterator();
 		Sheet currentSheet = null;
 		
-		while(it.hasNext()) {
+		int i = 0;
+		while(it.hasNext() && i < startSheetNb) { //Get rid of all sheets we dont want to compile at beginning
+			it.next();
+			i++;
+		}
+		
+		while(it.hasNext() && i <= endSheetNb) {
+			i++;
 			currentSheet = it.next();
 			if(currentSheet != null && !currentSheet.getSheetName().contains(sheetName)) {
 				System.out.println(currentSheet.getSheetName());

@@ -1,6 +1,7 @@
 package webcrawler;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -16,6 +18,8 @@ import org.openqa.selenium.WebElement;
 
 import fileReading.Data1D;
 import fileReading.Data2D;
+import fileReading.ExcelSheetCompiler;
+import fileReading.FileReader;
 
 public class SigmaAldrichParser {
 
@@ -24,9 +28,108 @@ public class SigmaAldrichParser {
 	static String bu = "realtimeBackUp.txt";
 	static String letterLinkPartial = "/etc/controller/controller-page";
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InvalidFormatException, IOException {
+		File excelFile = new File(folderPath + file);
 		int nbMol = 500;
-		findData(nbMol);
+		//findData(nbMol);
+		//Compile all sheets
+//		try {
+//			ExcelSheetCompiler.compileDataSheet(folderPath + file, "Sigma-Aldrich Compiled", 6, 12);
+//		} catch (EncryptedDocumentException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InvalidFormatException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		//Get SMILES
+		Data2D<String> data = null;
+		try {
+			data = FileReader.readDataFile(new File(folderPath + file), "Sigma-Aldrich Compiled");
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		WebDriver driver = WebCrawlerTest.initWebDriver();
+		driver.get("https://www.google.ca/?hl=fr");
+		
+		ArrayList<String> molecules = new ArrayList<String>();
+		for(int i = 0; i < data.getDataSize(); i++) {
+			Data1D<String> line = data.getLine(i);
+			molecules.add(line.getValue1D(0));
+		}
+		
+		ArrayList<Data1D<String>> moleculesData = new ArrayList<Data1D<String>>();
+		//First line for Identifiers
+		ArrayList<String> firstLine = new ArrayList<String>();
+		firstLine.add("Name");
+		firstLine.add("SMILES");
+		Data1D<String> firstLineData1D = new Data1D<String>(firstLine);
+		moleculesData.add(firstLineData1D);
+		firstLineData1D = null;
+		firstLine = null;
+		
+		//Load all molecules from page
+		for(int i = 0; i < molecules.size(); i++) {
+			String s = molecules.get(i);
+			ArrayList<String> line = null;
+			try {
+				line = WebCrawlerTest.getNameAndSmiles(driver, s);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(line != null) {
+				Data1D<String> dataLine = new Data1D<String>(line);
+				moleculesData.add(dataLine);
+			}
+		}
+		//Put them all in 2D array
+		Data2D<String> dataFilled = new Data2D<String>(moleculesData);
+		try {
+			dataFilled.writeInExcelFile(folderPath + file, "Sigma-Aldrich_Smiles");
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//Fill Info
+		try {
+			Data2D<String> filledSA = FileReader.readDataFile(excelFile, "Sigma-Aldrich_Smiles");
+			filledSA.writeInExcelFile(folderPath + file, "Sigma-Aldrich_Filled");
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Data2D<String> odorsList = FileReader.readDataFile(excelFile, "Sigma-Aldrich Compiled");
+		Data2D<String> filled = FileReader.readDataFile(excelFile, "Sigma-Aldrich_Filled");
+		for(Data1D<String> odorLine : odorsList.getData()) {
+			String name = odorLine.getValue1D(0);
+			String odor = odorLine.getValue1D(1);
+			for(Data1D<String> filledLine : filled.getData()) {
+				if(filledLine.getValue1D(0).equals(name)) {
+					System.out.println(name + ", " + odor);
+					filledLine.addValue(odor);
+					break;
+				}
+			}
+		}
+		filled.writeInExcelFile(folderPath + file, "Sigma-Aldrich_Filled-Odors");
 	}
 
 	public static void findData(int nbMol) {

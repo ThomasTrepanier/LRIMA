@@ -28,7 +28,7 @@ public class FileReader<E> {
 	public static Data2D<String> readDataFile(File file) throws InvalidFormatException, IOException{
 		Workbook dataWorkbook = createWorkbook(file);
 		Data2D<String> data = FileLoader.loadFileIn2D(dataWorkbook);
-		DataFill.fillMissingMoleculeData(data);
+		//DataFill.fillMissingMoleculeData(data);
 		return data;
 	} 
 	
@@ -42,14 +42,14 @@ public class FileReader<E> {
 	public static Data2D<String> readDataFile(File file, int sheet) throws InvalidFormatException, IOException{
 		Workbook dataWorkbook = createWorkbook(file);
 		Data2D<String> data = FileLoader.loadFileIn2D(dataWorkbook.getSheetAt(sheet));
-		DataFill.fillMissingMoleculeData(data);
+		//DataFill.fillMissingMoleculeData(data);
 		return data;
 	}
 	
 	public static Data2D<String> readDataFile(File file, String sheetName) throws InvalidFormatException, IOException{
 		Workbook dataWorkbook = createWorkbook(file);
 		Data2D<String> data = FileLoader.loadFileIn2D(dataWorkbook.getSheet(sheetName));
-		DataFill.fillMissingMoleculeData(data);
+		//DataFill.fillMissingMoleculeData(data);
 		return data;
 	}
 	
