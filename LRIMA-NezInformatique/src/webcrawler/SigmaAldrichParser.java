@@ -78,7 +78,7 @@ public class SigmaAldrichParser {
 		moleculesData.add(firstLineData1D);
 		firstLineData1D = null;
 		firstLine = null;
-		
+			
 		//Load all molecules from page
 		for(int i = 0; i < molecules.size(); i++) {
 			String s = molecules.get(i);
