@@ -18,6 +18,7 @@ import org.openqa.selenium.WebElement;
 
 import fileReading.Data1D;
 import fileReading.Data2D;
+import fileReading.DataFill;
 import fileReading.ExcelSheetCompiler;
 import fileReading.FileReader;
 
@@ -30,28 +31,28 @@ public class SigmaAldrichParser {
 
 	public static void main(String[] args) throws InvalidFormatException, IOException {
 		File excelFile = new File(folderPath + file);
-		int nbMol = 500;
-		//findData(nbMol);
+		int nbMol = 20;
+		findData(nbMol);
 		//Compile all sheets
-//		try {
-//			ExcelSheetCompiler.compileDataSheet(folderPath + file, "Sigma-Aldrich Compiled", 6, 12);
-//		} catch (EncryptedDocumentException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InvalidFormatException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			ExcelSheetCompiler.compileDataSheet(folderPath + file, "Sigma-Aldrich_Compiled2", 5, 5);
+		} catch (EncryptedDocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//Get SMILES
 		Data2D<String> data = null;
 		try {
-			data = FileReader.readDataFile(new File(folderPath + file), "Sigma-Aldrich Compiled");
+			data = FileReader.readDataFile(new File(folderPath + file), "Sigma-Aldrich_Compiled2");
 		} catch (InvalidFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -108,6 +109,7 @@ public class SigmaAldrichParser {
 		//Fill Info
 		try {
 			Data2D<String> filledSA = FileReader.readDataFile(excelFile, "Sigma-Aldrich_Smiles");
+			DataFill.fillMissingMoleculeData(filledSA);
 			filledSA.writeInExcelFile(folderPath + file, "Sigma-Aldrich_Filled");
 		} catch (InvalidFormatException e) {
 			// TODO Auto-generated catch block

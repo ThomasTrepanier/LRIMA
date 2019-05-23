@@ -37,10 +37,13 @@ public class DataFill {
 	
 	public static void verifyIndexRowIntegrity(Data2D<String> data) {
 		Data1D<String> indexLine = data.getLine(0);
-		for(String index : indexes) {
-			if(!indexLine.getData1D().contains(index)) {
-				indexLine.addValue(index);
+		for(int i = 0; i < indexes.size(); i++) {
+			String s = indexes.get(i);
+			if(!indexLine.getValue1D(i).equals(s)) {
+				indexLine.addValueAtRange(i, s);
+				data.getIndexMap().put(s, i);
 			}
+				
 		}
 	}
 	
