@@ -7,13 +7,13 @@ public class Layer {
 	//Constructor for hidden and output layer
 	public Layer(int nbWeights, int nbNeurons) {
 		this.neurons = new Neuron[nbNeurons];
-		
 		for(int i = 0; i < nbNeurons; i++) {
 			float[] weights = new float[nbWeights];
+			
 			for(int j = 0; j < nbWeights; j++) {
 				weights[j] = StatUtil.RandomFloat(Neuron.minWeightValue, Neuron.maxWeightValue);
 			}
-			neurons[i] = new Neuron(weights, StatUtil.RandomFloat(0, 1));
+			neurons[i] = new Neuron(weights, StatUtil.RandomFloat(-1, 1));
 		}
 	}
 	
