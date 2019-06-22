@@ -71,6 +71,7 @@ public class NN_GUI {
 	private JTextField txtIncrement;
 	private JLabel lblVariation;
 	private JMenuItem mntmPastAccuracies;
+	private JButton btnUpdateNetwork;
 
 	/**
 	 * Launch the application.
@@ -368,5 +369,9 @@ public class NN_GUI {
 		mntmPastAccuracies = new JMenuItem("Past Accuracies");
 		mntmPastAccuracies.setBounds(489, 348, 129, 22);
 		frmNeuralNetwork.getContentPane().add(mntmPastAccuracies);
+		
+		btnUpdateNetwork = new JButton("Update Network");
+		btnUpdateNetwork.setBounds(465, 174, 129, 34);
+		frmNeuralNetwork.getContentPane().add(btnUpdateNetwork);
 	}
 }

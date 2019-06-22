@@ -45,19 +45,24 @@ public class NeuralNetwork {
 		System.out.println("============");
 		System.out.println("Output before training");
 		System.out.println("============");
-		mnistOutput(0.01f);
+//		mnistOutput(0.01f);
 		
 		System.out.println("Training...");
-		train(20, 0.05f, percent);
-          
+		long trainStartTime = System.currentTimeMillis();
+		train(3, 0.21f, percent);
+        System.out.println("Time to train: " + (System.currentTimeMillis() - trainStartTime) + "ms");
+        
 		System.out.println("============");
 		System.out.println("Output after training");
 		System.out.println("============");
-		mnistOutput(0.01f);
+//		mnistOutput(0.01f);
 
 		sucessRate = evaluateMNISTAccuracy() * 100;
 		System.out.println("Sucess rate on test set: " + sucessRate + "%");
-
+		
+		long executionStartTime = System.nanoTime();
+		forward(testSet[0].data);
+		System.out.println("Execution time is " + (System.nanoTime() - executionStartTime) + "ns");
 	}
 
 	public static void CreateTrainingData() {
@@ -123,7 +128,6 @@ public class NeuralNetwork {
         } 	
 	}
 
-	// This part is heavily inspired from the website in the first note.
 	// The idea is that you calculate a gradient and cache the updated weights in
 	// the neurons.
 	// When ALL the neurons new weight have been calculated we refresh the neurons.
