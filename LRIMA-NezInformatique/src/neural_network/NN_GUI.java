@@ -72,6 +72,7 @@ public class NN_GUI {
 	private JLabel lblVariation;
 	private JMenuItem mntmPastAccuracies;
 	private JButton btnUpdateNetwork;
+	private JButton btnChangeActivationFunction;
 
 	/**
 	 * Launch the application.
@@ -105,6 +106,78 @@ public class NN_GUI {
 		frmNeuralNetwork.setBounds(100, 100, 661, 486);
 		frmNeuralNetwork.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmNeuralNetwork.getContentPane().setLayout(null);
+		
+		panelTrain = new JPanel();
+		panelTrain.setBounds(207, 259, 248, 177);
+		frmNeuralNetwork.getContentPane().add(panelTrain);
+		panelTrain.setLayout(null);
+		
+		lblTrain = new JLabel("Train");
+		lblTrain.setBounds(102, 5, 43, 20);
+		lblTrain.setFont(new Font("Tahoma", Font.BOLD, 16));
+		panelTrain.add(lblTrain);
+		
+		lblEpochs = new JLabel("Epochs");
+		lblEpochs.setBounds(19, 42, 46, 14);
+		panelTrain.add(lblEpochs);
+		
+		lblLearningRate = new JLabel("Learning rate");
+		lblLearningRate.setBounds(10, 98, 99, 14);
+		panelTrain.add(lblLearningRate);
+		
+		lblWeights = new JLabel("Weights starting at");
+		lblWeights.setBounds(129, 36, 109, 14);
+		panelTrain.add(lblWeights);
+		
+		lblDatasetPercent = new JLabel("% of dataset to use");
+		lblDatasetPercent.setBounds(139, 98, 109, 14);
+		panelTrain.add(lblDatasetPercent);
+		
+		formattedTextField_Epochs = new JFormattedTextField();
+		formattedTextField_Epochs.setHorizontalAlignment(SwingConstants.CENTER);
+		formattedTextField_Epochs.setText("5");
+		formattedTextField_Epochs.setBounds(19, 67, 36, 20);
+		panelTrain.add(formattedTextField_Epochs);
+		
+		formattedTextField_LR = new JFormattedTextField();
+		formattedTextField_LR.setText("0.05");
+		formattedTextField_LR.setHorizontalAlignment(SwingConstants.CENTER);
+		formattedTextField_LR.setBounds(20, 123, 36, 20);
+		panelTrain.add(formattedTextField_LR);
+		
+		frmtdtxtfldMin = new JFormattedTextField();
+		frmtdtxtfldMin.setToolTipText("Minimum");
+		frmtdtxtfldMin.setText("Min");
+		frmtdtxtfldMin.setHorizontalAlignment(SwingConstants.CENTER);
+		frmtdtxtfldMin.setBounds(139, 67, 36, 20);
+		panelTrain.add(frmtdtxtfldMin);
+		
+		frmtdtxtfldMax = new JFormattedTextField();
+		frmtdtxtfldMax.setToolTipText("Maximum");
+		frmtdtxtfldMax.setText("Max");
+		frmtdtxtfldMax.setHorizontalAlignment(SwingConstants.CENTER);
+		frmtdtxtfldMax.setBounds(185, 67, 36, 20);
+		panelTrain.add(frmtdtxtfldMax);
+		
+		label = new JLabel("-");
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setBounds(156, 70, 46, 14);
+		panelTrain.add(label);
+		
+		formattedTextField_Percent = new JFormattedTextField();
+		formattedTextField_Percent.setHorizontalAlignment(SwingConstants.CENTER);
+		formattedTextField_Percent.setToolTipText("Number in percentage");
+		formattedTextField_Percent.setText("100");
+		formattedTextField_Percent.setBounds(169, 123, 36, 20);
+		panelTrain.add(formattedTextField_Percent);
+		
+		label_percent = new JLabel("%");
+		label_percent.setBounds(208, 126, 18, 14);
+		panelTrain.add(label_percent);
+		
+		btnChangeActivationFunction = new JButton("Change Activation Function");
+		btnChangeActivationFunction.setBounds(50, 154, 164, 23);
+		panelTrain.add(btnChangeActivationFunction);
 		
 		lblDataset = new JLabel("Dataset");
 		lblDataset.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -297,74 +370,6 @@ public class NN_GUI {
 		lblVariation.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblVariation.setBounds(133, 77, 76, 14);
 		panel_Test.add(lblVariation);
-		
-		panelTrain = new JPanel();
-		panelTrain.setBounds(207, 259, 248, 177);
-		frmNeuralNetwork.getContentPane().add(panelTrain);
-		panelTrain.setLayout(null);
-		
-		lblTrain = new JLabel("Train");
-		lblTrain.setBounds(102, 5, 43, 20);
-		lblTrain.setFont(new Font("Tahoma", Font.BOLD, 16));
-		panelTrain.add(lblTrain);
-		
-		lblEpochs = new JLabel("Epochs");
-		lblEpochs.setBounds(19, 42, 46, 14);
-		panelTrain.add(lblEpochs);
-		
-		lblLearningRate = new JLabel("Learning rate");
-		lblLearningRate.setBounds(10, 98, 99, 14);
-		panelTrain.add(lblLearningRate);
-		
-		lblWeights = new JLabel("Weights starting at");
-		lblWeights.setBounds(139, 42, 109, 14);
-		panelTrain.add(lblWeights);
-		
-		lblDatasetPercent = new JLabel("% of dataset to use");
-		lblDatasetPercent.setBounds(139, 98, 109, 14);
-		panelTrain.add(lblDatasetPercent);
-		
-		formattedTextField_Epochs = new JFormattedTextField();
-		formattedTextField_Epochs.setHorizontalAlignment(SwingConstants.CENTER);
-		formattedTextField_Epochs.setText("5");
-		formattedTextField_Epochs.setBounds(19, 67, 36, 20);
-		panelTrain.add(formattedTextField_Epochs);
-		
-		formattedTextField_LR = new JFormattedTextField();
-		formattedTextField_LR.setText("0.05");
-		formattedTextField_LR.setHorizontalAlignment(SwingConstants.CENTER);
-		formattedTextField_LR.setBounds(20, 123, 36, 20);
-		panelTrain.add(formattedTextField_LR);
-		
-		frmtdtxtfldMin = new JFormattedTextField();
-		frmtdtxtfldMin.setToolTipText("Minimum");
-		frmtdtxtfldMin.setText("Min");
-		frmtdtxtfldMin.setHorizontalAlignment(SwingConstants.CENTER);
-		frmtdtxtfldMin.setBounds(139, 67, 36, 20);
-		panelTrain.add(frmtdtxtfldMin);
-		
-		frmtdtxtfldMax = new JFormattedTextField();
-		frmtdtxtfldMax.setToolTipText("Maximum");
-		frmtdtxtfldMax.setText("Max");
-		frmtdtxtfldMax.setHorizontalAlignment(SwingConstants.CENTER);
-		frmtdtxtfldMax.setBounds(185, 67, 36, 20);
-		panelTrain.add(frmtdtxtfldMax);
-		
-		label = new JLabel("-");
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		label.setBounds(156, 70, 46, 14);
-		panelTrain.add(label);
-		
-		formattedTextField_Percent = new JFormattedTextField();
-		formattedTextField_Percent.setHorizontalAlignment(SwingConstants.CENTER);
-		formattedTextField_Percent.setToolTipText("Number in percentage");
-		formattedTextField_Percent.setText("100");
-		formattedTextField_Percent.setBounds(169, 123, 36, 20);
-		panelTrain.add(formattedTextField_Percent);
-		
-		label_percent = new JLabel("%");
-		label_percent.setBounds(208, 126, 18, 14);
-		panelTrain.add(label_percent);
 		
 		mntmPastAccuracies = new JMenuItem("Past Accuracies");
 		mntmPastAccuracies.setBounds(489, 348, 129, 22);

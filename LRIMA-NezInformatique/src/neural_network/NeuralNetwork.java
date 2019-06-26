@@ -8,8 +8,8 @@ public class NeuralNetwork {
 	static Layer[] layers; // My changes
 
 	// Training data
-	static TrainingData[] tDataSet; // My changes
-	static TrainingData[] testSet;
+	public static TrainingData[] tDataSet; // My changes
+	public static TrainingData[] testSet;
 
 	// Main Method
 	public static void main(String[] args) {
@@ -20,7 +20,8 @@ public class NeuralNetwork {
 		
 		// Create the training data
 		try {
-			MNIST_Loader.loadMnistDataSet();
+//			MNIST_Loader.loadMnistDataSet();
+			pictureUtils.PictureReader.loadFruits(1f);
 			System.out.println(tDataSet[0]);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -31,38 +32,50 @@ public class NeuralNetwork {
 		float nbInput = tDataSet[0].data.length;
 		System.out.println(tDataSet[0].data.length);
 		//(float) (-1/Math.sqrt(nbInput)), (float) (1/Math.sqrt(nbInput))
-		Neuron.setRangeWeights(-1, 1);
+		Neuron.setRangeWeights(-1 , 1);
 
-		layers = new Layer[4];
-		layers[0] = null; // Input Layer 0,2
-		layers[1] = new Layer(784, 200); // Hidden Layer 2,6
-		layers[2] = new Layer(200, 80); // Hidden Layer 2,6
-		layers[3] = new Layer(80, 10); // Hidden Layer 2,6
+//		layers = new Layer[7];
+//		layers[0] = null; // Input Layer 0,2
+//		layers[1] = new Layer(784, 2500, ActivationFunction.TanH, 1.7159f, 0.6666f);
+//		layers[2] = new Layer(2500, 2000, ActivationFunction.TanH, 1.7159f, 0.6666f);
+//		layers[3] = new Layer(2000, 1500, ActivationFunction.TanH, 1.7159f, 0.6666f);
+//		layers[4] = new Layer(1500, 1000, ActivationFunction.TanH, 1.7159f, 0.6666f);
+//		layers[5] = new Layer(1000, 500, ActivationFunction.TanH, 1.7159f, 0.6666f);
+//		layers[6] = new Layer(500, 10, ActivationFunction.TanH, 1.7159f, 0.6666f);
+		
+		layers = new Layer[6];
+		layers[0] = null;
+		layers[1] = new Layer((int) nbInput, (int) (nbInput / 2f), ActivationFunction.Sigmoid, 1f, 1f);
+		layers[2] = new Layer((int) (nbInput / 2f), (int) (nbInput / 4f), ActivationFunction.Sigmoid, 1f, 1f);
+		layers[3] = new Layer((int) (nbInput / 4f), (int) (nbInput / 8f), ActivationFunction.Sigmoid, 1f, 1f);
+		layers[4] = new Layer((int) (nbInput / 8f), (int) (nbInput / 16f), ActivationFunction.Sigmoid, 1f, 1f);
+		layers[5] = new Layer((int) (nbInput / 16f), 10, ActivationFunction.Sigmoid, 1f, 1f);
+		
 		
 		float percent = 1f;
 		float sucessRate = 0;
 
-		System.out.println("============");
-		System.out.println("Output before training");
-		System.out.println("============");
+//		System.out.println("============");
+//		System.out.println("Output before training");
+//		System.out.println("============");
 //		mnistOutput(0.01f);
+		long executionStartTime = System.nanoTime();
+		forward(testSet[0].data);
+		System.out.println("Execution time is " + (System.nanoTime() - executionStartTime) / 100000000.0 + "s");
 		
 		System.out.println("Training...");
 		long trainStartTime = System.currentTimeMillis();
-		train(3, 0.21f, percent);
-        System.out.println("Time to train: " + (System.currentTimeMillis() - trainStartTime) + "ms");
+		train(30, 0.025f, percent);
+        System.out.println("Time to train: " + (System.currentTimeMillis() -  trainStartTime) / 1000.0 + "s");
         
 		System.out.println("============");
 		System.out.println("Output after training");
 		System.out.println("============");
-//		mnistOutput(0.01f);
+		mnistOutput(0.5f);
 
 		sucessRate = evaluateMNISTAccuracy() * 100;
 		System.out.println("Sucess rate on test set: " + sucessRate + "%");
-		
-		long executionStartTime = System.nanoTime();
-		forward(testSet[0].data);
-		System.out.println("Execution time is " + (System.nanoTime() - executionStartTime) + "ns");
+		StatUtil.saveNeurons("2-Fruits", layers, sucessRate);
 	}
 
 	public static void CreateTrainingData() {
@@ -89,24 +102,23 @@ public class NeuralNetwork {
 
 		for (int i = 0; i < nbTest; i++) {
 			float a = StatUtil.RandomFloat(0, 1);
-
+			
+			float[] input = new float[2];
+			float[] output = new float[1];
 			if (a < 0.25f) {
-				float[] input = { 0f, 0f };
-				float[] output = { 0 };
-				testSet[i] = new TrainingData(input, output);
+				input = new float[] { 0f, 0f };
+				output = new float[] { 0 };
 			} else if (a >= 0.25f && a < 0.5f) {
-				float[] input = { 0f, 1f };
-				float[] output = { 1 };
-				testSet[i] = new TrainingData(input, output);
+				input = new float[] { 0f, 1f };
+				output = new float[] { 1 };
 			} else if (a >= 0.5f && a < 0.75f) {
-				float[] input = { 1f, 0f };
-				float[] output = { 1 };
-				testSet[i] = new TrainingData(input, output);
+				input = new float[] { 1f, 0f };
+				output = new float[] { 1 };
 			} else {
-				float[] input = { 1f, 1f };
-				float[] output = { 0 };
-				testSet[i] = new TrainingData(input, output);
+				input = new float[] { 1f, 1f };
+				output = new float[] { 0 };
 			}
+			testSet[i] = new TrainingData(input, output);
 			// System.out.println(testSet[i]);
 		}
 
@@ -122,8 +134,10 @@ public class NeuralNetwork {
         		for(int k = 0; k < layers[i-1].neurons.length; k++) {
         			sum += layers[i-1].neurons[k].value*layers[i].neurons[j].weights[k];
         		}
-        		//sum += layers[i].neurons[j].bias; // TODO add in the bias 
-        		layers[i].neurons[j].value = StatUtil.Sigmoid(sum);
+//        		sum += layers[i].neurons[j].bias; // TODO add in the bias 
+        		layers[i].neurons[j].evaluateValue(layers[i].getActivationFunction(), sum, layers[i].getaParam(), layers[i].getbParam(), j, layers[i]);
+//        		layers[i].neurons[j].value = StatUtil.Sigmoid(sum);
+//        		layers[i].neurons[j].valueDerivate = StatUtil.SigmoidDerivate(sum);
         	}
         } 	
 	}
@@ -141,13 +155,15 @@ public class NeuralNetwork {
     	// Update the output layers 
     	// For each output
     	for(int i = 0; i < layers[out_index].neurons.length; i++) {
-    		// and for each of their weights
     		float output = layers[out_index].neurons[i].value;
+    		float outputDerivate = layers[out_index].neurons[i].valueDerivate;
     		float target = tData.expectedOutput[i];
-    		float derivative = output-target;
-    		float delta = derivative*(output*(1-output));
+    		
+    		float derivative = StatUtil.lossFunction(target, output);
+    		float delta = derivative*outputDerivate;
     		layers[out_index].neurons[i].gradient = delta;
-    		for(int j = 0; j < layers[out_index].neurons[i].weights.length;j++) { 
+    		
+    		for(int j = 0; j < layers[out_index].neurons[i].weights.length;j++) { // and for each of their weights
     			float previous_output = layers[out_index-1].neurons[j].value;
     			float error = delta*previous_output;
     			layers[out_index].neurons[i].cache_weights[j] = layers[out_index].neurons[i].weights[j] - learning_rate*error;
@@ -159,8 +175,10 @@ public class NeuralNetwork {
     		// For all neurons in that layers
     		for(int j = 0; j < layers[i].neurons.length; j++) {
     			float output = layers[i].neurons[j].value;
+    			float outputDerivate = layers[i].neurons[j].valueDerivate;
+    			
     			float gradient_sum = sumGradient(j,i+1);
-    			float delta = (gradient_sum)*(output*(1-output));
+    			float delta = (gradient_sum)*outputDerivate;
     			layers[i].neurons[j].gradient = delta;
     			// And for all their weights
     			for(int k = 0; k < layers[i].neurons[j].weights.length; k++) {
@@ -193,10 +211,16 @@ public class NeuralNetwork {
 
 	// This function is used to train being forward and backward.
 	public static void train(int epoch, float learning_rate, float percentageOfDataSetToUse) {
+		TrainingData[] data = tDataSet;
 		for(int i = 0; i < epoch; i++) {
     		for(int j = 0; j < tDataSet.length * percentageOfDataSetToUse; j++) {
-    			forward(tDataSet[j].data);
-    			backward(learning_rate,tDataSet[j]);
+    			if(tDataSet[j] == null) {
+    				System.out.println(tDataSet[j] + "-" + data[j] + j);
+    			}
+    			else {
+    				forward(tDataSet[j].data);
+        			backward(learning_rate,tDataSet[j]);
+    			}
     		}
     	}
 	}

@@ -3,14 +3,19 @@ package neural_network;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class StatUtil {
 	
 	static String filePath = "Data/";
+	static String savePath = "results/";
 	//Generates a random number between min and max
 	public static float RandomFloat(float min, float max) {
 		return min + (float) Math.random() * (max - min);
@@ -25,18 +30,69 @@ public class StatUtil {
 		else
 			return -num;
 	}
+	
+	//ACTIVATION FUNCTIONS
 	//Sigmoid Function (Activation Function)
 	public static float Sigmoid(float x) {
-		return (float) (1 / (1 + Math.pow(Math.E, -x)));
+		return (float) (1f / (1f + Math.pow(Math.E, -x)));
 	}
 	
 	//Derivate of Sigmoid Function
 	public static float SigmoidDerivate(float x) {
-		return Sigmoid(x) * (1-Sigmoid(x));
+		return Sigmoid(x) * (1.0f-Sigmoid(x));
+	}
+	
+	public static float Relu(float x) {
+		return (float) Math.max(0f, x);
+	}
+	public static float ReluDerivate(float x) {
+		if(x > 0f)	return 1f;
+		else return 0f;
+	}
+	
+	public static float LeakyRelu(float x) {
+		if(x >= 0f) return x; 	
+		else return 0.01f*x;
+	}
+	public static float LeakyReluDerivate(float x) {
+		if(x >= 0)	return 1;
+		else	return 0.01f;
+	}
+	
+	public static float Softplus(float x) {
+		return (float) Math.log(1 + Math.pow(Math.E, x));
+	}
+	public static float SoftplusDerivate(float x) {
+		return Sigmoid(x);
+	}
+	
+	public static float Softmax(int index, Layer layer) {
+		float sum = 0;
+		
+		for(int i = 0; i < layer.neurons.length; i++) {
+			sum += Math.exp(layer.neurons[i].value);
+		}
+		return (float) Math.exp(layer.neurons[index].value / sum);
+	}
+	public static float SoftmaxDerivate(int index, Layer layer) {
+		return Softmax(index, layer) * (1f - Softmax(index, layer));
+	}
+	
+	public static float TanH(float x, float a, float b) {
+		return (float) (a * Math.tanh(b * x));
+	}
+	public static float TanHDerivate(float x, float a, float b) {
+		return (float) a*b*(1f - TanH(x, 1, b));
 	}
 	
 	public static float lossFunction(float target, float output) {
-		return Math.abs(target - output);
+		return output - target;
+	}
+	
+	public static float cross_entropy(float output, float target) {
+		if(output == 0)
+			output = 0.01f;
+		return (float) (-target*Math.log(output));
 	}
 	
 	public static float squaredError(float output, float target) {
@@ -116,5 +172,43 @@ public class StatUtil {
 			}
 		}
 		NeuralNetwork.testSet = data;
+	}
+	
+	public static int getNbOfFiles(File file) {
+		int sub_files = 0;
+		if(!file.isDirectory())
+			return 1;
+		for(File f : file.listFiles()) {
+			sub_files += getNbOfFiles(f);
+		}
+		return sub_files;
+	}
+	
+	public static void saveNeurons(String objective, Layer[] layers, float accuracy) {
+		Timestamp ts = new Timestamp(System.currentTimeMillis());
+		String fileName = normalizeFileName(objective + "_" + ts + "_" + accuracy);
+		
+		try {
+			FileOutputStream outStream = new FileOutputStream(savePath + fileName);
+			ObjectOutputStream objOutStream = new ObjectOutputStream(outStream);
+			objOutStream.writeObject(layers);
+			objOutStream.close();
+			System.out.println("Neurones sauvegardés dans " + savePath + fileName);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private static String normalizeFileName(String fileName) {
+		String normalizedName = "";
+		for(int i = 0; i < fileName.length(); i++) {
+			char c = fileName.charAt(i);
+			if(c == ' ' || c == ':') {
+				normalizedName += "-";
+			} else
+				normalizedName += c;
+		}
+		return normalizedName;
 	}
 }
