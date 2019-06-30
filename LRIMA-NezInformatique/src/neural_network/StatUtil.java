@@ -107,6 +107,14 @@ public class StatUtil {
 		return sum;
 	}
 	
+	public static float average(float[] numbers) {
+		float sum = 0;
+		for(float f : numbers) {
+			sum += f;
+		}
+		return sum / numbers.length;
+	}
+	
 	public static void loadMNIST(int setToLoad) throws IOException {
 		File mnistTrain = new File(filePath + "mnist_train.csv");
 		File mnistTest = new File(filePath + "mnist_test.csv");
@@ -184,9 +192,13 @@ public class StatUtil {
 		return sub_files;
 	}
 	
-	public static void saveNeurons(String objective, Layer[] layers, float accuracy) {
+	public static void saveNeurons(Layer[] layers, float accuracy) {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
-		String fileName = normalizeFileName(objective + "_" + ts + "_" + accuracy);
+		String layersInfo = "";
+		for(Layer l : layers) {
+			layersInfo += l.neurons.length + "-";
+		}
+		String fileName = normalizeFileName(layersInfo + "_" + ts + "_" + accuracy);
 		
 		try {
 			FileOutputStream outStream = new FileOutputStream(savePath + fileName);

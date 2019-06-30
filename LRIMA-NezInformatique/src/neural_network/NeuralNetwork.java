@@ -45,15 +45,14 @@ public class NeuralNetwork {
 		
 		layers = new Layer[6];
 		layers[0] = null;
-		layers[1] = new Layer((int) nbInput, (int) (nbInput / 2f), ActivationFunction.Sigmoid, 1f, 1f);
-		layers[2] = new Layer((int) (nbInput / 2f), (int) (nbInput / 4f), ActivationFunction.Sigmoid, 1f, 1f);
-		layers[3] = new Layer((int) (nbInput / 4f), (int) (nbInput / 8f), ActivationFunction.Sigmoid, 1f, 1f);
-		layers[4] = new Layer((int) (nbInput / 8f), (int) (nbInput / 16f), ActivationFunction.Sigmoid, 1f, 1f);
-		layers[5] = new Layer((int) (nbInput / 16f), 10, ActivationFunction.Sigmoid, 1f, 1f);
-		
+		layers[1] = new Layer((int) nbInput, 1000, ActivationFunction.Sigmoid, 1f, 1f);
+		layers[2] = new Layer(1000, 800, ActivationFunction.Sigmoid, 1f, 1f);
+		layers[3] = new Layer(800, 300, ActivationFunction.Sigmoid, 1f, 1f);
+		layers[4] = new Layer(300, 80, ActivationFunction.Sigmoid, 1f, 1f);
+		layers[5] = new Layer(80, 10, ActivationFunction.Sigmoid, 1f, 1f);
 		
 		float percent = 1f;
-		float sucessRate = 0;
+		float sucessRate;
 
 //		System.out.println("============");
 //		System.out.println("Output before training");
@@ -65,7 +64,7 @@ public class NeuralNetwork {
 		
 		System.out.println("Training...");
 		long trainStartTime = System.currentTimeMillis();
-		train(30, 0.025f, percent);
+		train(200, 0.05f, percent);
         System.out.println("Time to train: " + (System.currentTimeMillis() -  trainStartTime) / 1000.0 + "s");
         
 		System.out.println("============");
@@ -73,9 +72,9 @@ public class NeuralNetwork {
 		System.out.println("============");
 		mnistOutput(0.5f);
 
-		sucessRate = evaluateMNISTAccuracy() * 100;
-		System.out.println("Sucess rate on test set: " + sucessRate + "%");
-		StatUtil.saveNeurons("2-Fruits", layers, sucessRate);
+		sucessRate = evaluateMNISTAccuracy();
+		System.out.println("Average sucess rate on test set: " + sucessRate * 100 + "%");
+		StatUtil.saveNeurons(layers, sucessRate);
 	}
 
 	public static void CreateTrainingData() {
@@ -213,6 +212,7 @@ public class NeuralNetwork {
 	public static void train(int epoch, float learning_rate, float percentageOfDataSetToUse) {
 		TrainingData[] data = tDataSet;
 		for(int i = 0; i < epoch; i++) {
+			System.out.println("Epoch: " + i);
     		for(int j = 0; j < tDataSet.length * percentageOfDataSetToUse; j++) {
     			if(tDataSet[j] == null) {
     				System.out.println(tDataSet[j] + "-" + data[j] + j);
@@ -290,23 +290,23 @@ public class NeuralNetwork {
 			for (int j = 0; j < layers[layers.length - 1].neurons.length; j++) { // For all neurons in final layer
 				int output = 0;
 				float highest = layers[layers.length - 1].neurons[0].value;
-				
-				for(int k = 1; k < layers[layers.length - 1].neurons.length; k++) {
+
+				for (int k = 1; k < layers[layers.length - 1].neurons.length; k++) {
 					Neuron currentOutput = layers[layers.length - 1].neurons[k];
-					if(currentOutput.value > highest) {
+					if (currentOutput.value > highest) {
 						highest = currentOutput.value;
 						output = k;
 					}
 				}
-				
+
 				int expected = 0;
-				for(int k = 0; k < testSet[i].expectedOutput.length; k++) {
-					if(testSet[i].expectedOutput[k] == 1f) {
+				for (int k = 0; k < testSet[i].expectedOutput.length; k++) {
+					if (testSet[i].expectedOutput[k] == 1f) {
 						expected = k;
 						break;
 					}
 				}
-				
+
 				if (output == expected)
 					sucess++;
 				else
@@ -314,5 +314,6 @@ public class NeuralNetwork {
 			}
 		}
 		return sucess / (sucess + fail);
+
 	}
 }
