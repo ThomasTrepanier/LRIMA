@@ -20,7 +20,7 @@ public class NeuralNetwork {
 		
 		// Create the training data
 		try {
-//			MNIST_Loader.loadMnistDataSet();
+			//MNIST_Loader.loadMnistDataSet();
 			pictureUtils.PictureReader.loadFruits(1f);
 			System.out.println(tDataSet[0]);
 		} catch (IOException e) {
@@ -30,6 +30,7 @@ public class NeuralNetwork {
 		
 		//Gets the number of inputs to initialize weights
 		float nbInput = tDataSet[0].data.length;
+		int nOut = tDataSet[0].expectedOutput.length;
 		System.out.println(tDataSet[0].data.length);
 		//(float) (-1/Math.sqrt(nbInput)), (float) (1/Math.sqrt(nbInput))
 		Neuron.setRangeWeights(-1 , 1);
@@ -43,13 +44,14 @@ public class NeuralNetwork {
 //		layers[5] = new Layer(1000, 500, ActivationFunction.TanH, 1.7159f, 0.6666f);
 //		layers[6] = new Layer(500, 10, ActivationFunction.TanH, 1.7159f, 0.6666f);
 		
+		System.out.println("IN: " + nbInput);
 		layers = new Layer[6];
 		layers[0] = null;
 		layers[1] = new Layer((int) nbInput, 1000, ActivationFunction.Sigmoid, 1f, 1f);
 		layers[2] = new Layer(1000, 800, ActivationFunction.Sigmoid, 1f, 1f);
 		layers[3] = new Layer(800, 300, ActivationFunction.Sigmoid, 1f, 1f);
 		layers[4] = new Layer(300, 80, ActivationFunction.Sigmoid, 1f, 1f);
-		layers[5] = new Layer(80, 10, ActivationFunction.Sigmoid, 1f, 1f);
+		layers[5] = new Layer(80, nOut, ActivationFunction.Sigmoid, 1f, 1f);
 		
 		float percent = 1f;
 		float sucessRate;
@@ -64,7 +66,7 @@ public class NeuralNetwork {
 		
 		System.out.println("Training...");
 		long trainStartTime = System.currentTimeMillis();
-		train(200, 0.05f, percent);
+		train(20, 0.005f, percent);
         System.out.println("Time to train: " + (System.currentTimeMillis() -  trainStartTime) / 1000.0 + "s");
         
 		System.out.println("============");

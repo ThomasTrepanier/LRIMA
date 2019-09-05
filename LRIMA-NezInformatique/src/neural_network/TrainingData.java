@@ -11,6 +11,9 @@ public class TrainingData extends Data {
 		this.expectedOutput = expectedOutput;
 	}
 	
+	public float[] getLabels() {
+		return expectedOutput;
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

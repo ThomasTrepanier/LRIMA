@@ -7,4 +7,8 @@ public class Data {
 	public Data(float[] data) {
 		this.data = data;
 	}
+	
+	public float[] getData() {
+		return this.data;
+	}
 }

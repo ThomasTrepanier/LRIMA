@@ -14,21 +14,30 @@ import neural_network.TrainingData;
 
 public class PictureReader {
 
-	static final String trainingFolder = "Data\\Fruit_Training\\";
-	static final String testFolder = "Data\\Fruit_Test\\";
-	static final int nbOfFruits = 10;
+	static final String TRAINING_FOLDER = "Data\\Fruit_Training\\";
+	static final String TEST_FOLDER = "Data\\Fruit_Test\\";
+	static final int NB_OF_FRUITS = 3; //TODO REWRITE SO FRUITS NB IS FOLDER AMOUNT
 
 	public static void loadFruits(float percent) throws IOException {
 		String picture = "Apple Braeburn/0_100.jpg";
-		TrainingData[] tData = loadPicturesData(new File(trainingFolder), trainingFolder, percent);
+		TrainingData[] tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent);
 		NeuralNetwork.tDataSet = tData;
-		TrainingData[] testData = loadPicturesData(new File(testFolder), testFolder, percent);
+		TrainingData[] testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent);
 		NeuralNetwork.testSet = testData;
+	}
+	
+	public static TrainingData[][] loadFruitsDL4J(float percent) throws IOException {
+		String picture = "Apple Braeburn/0_100.jpg";
+		TrainingData[] tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent);
+		TrainingData[] testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent);
+		
+		TrainingData[][] datas = {tData, testData};
+		return datas;
 	}
 
 	private static TrainingData[] initializeTrainingData() {
 		int nbOfPicutres = 0;
-		File folderPathFile = new File(trainingFolder);
+		File folderPathFile = new File(TRAINING_FOLDER);
 		nbOfPicutres = StatUtil.getNbOfFiles(folderPathFile);
 		return new TrainingData[nbOfPicutres];
 	}
@@ -174,7 +183,7 @@ public class PictureReader {
 
 		int expectedIndex = getIndexOfPictureName(name);
 		if (expectedIndex != -1) {
-			float[] expectedOutput = new float[nbOfFruits];
+			float[] expectedOutput = new float[NB_OF_FRUITS];
 			expectedOutput[expectedIndex] = 1f;
 			float[] normalizedData = normalizeData(data, 1020, 0.01f);
 			return new TrainingData(normalizedData, expectedOutput);
