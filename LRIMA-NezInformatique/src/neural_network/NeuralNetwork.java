@@ -66,7 +66,7 @@ public class NeuralNetwork {
 		
 		System.out.println("Training...");
 		long trainStartTime = System.currentTimeMillis();
-		train(20, 0.005f, percent);
+		train(10, 0.005f, percent);
         System.out.println("Time to train: " + (System.currentTimeMillis() -  trainStartTime) / 1000.0 + "s");
         
 		System.out.println("============");

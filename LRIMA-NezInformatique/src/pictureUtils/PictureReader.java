@@ -16,7 +16,7 @@ public class PictureReader {
 
 	static final String TRAINING_FOLDER = "Data\\Fruit_Training\\";
 	static final String TEST_FOLDER = "Data\\Fruit_Test\\";
-	static final int NB_OF_FRUITS = 3; //TODO REWRITE SO FRUITS NB IS FOLDER AMOUNT
+	static final int NB_OF_FRUITS = 10; //TODO REWRITE SO FRUITS NB IS FOLDER AMOUNT
 
 	public static void loadFruits(float percent) throws IOException {
 		String picture = "Apple Braeburn/0_100.jpg";

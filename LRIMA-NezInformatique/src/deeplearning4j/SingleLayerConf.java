@@ -32,9 +32,9 @@ public class SingleLayerConf {
 		double learningRate = 0.005;
 		double momentum = 0.9;
 		int batchSize = 100;
-		int epochs = 20;
+		int epochs = 10;
 		int nIn = nRows * nCols;
-		int[] nHidden = {1000};
+		int[] nHidden = {1000, 800, 300, 80};
 		int nOut = 10;
 		
 		System.out.println("Loading dataset...");
@@ -89,8 +89,23 @@ public class SingleLayerConf {
 						.nOut(nHidden[0])
 						.activation(Activation.RELU)
 						.build())
-				.layer(new OutputLayer.Builder()
+				.layer(new DenseLayer.Builder()
 						.nIn(nHidden[0])
+						.nOut(nHidden[1])
+						.activation(Activation.RELU)
+						.build())
+				.layer(new DenseLayer.Builder()
+						.nIn(nHidden[1])
+						.nOut(nHidden[2])
+						.activation(Activation.RELU)
+						.build())
+				.layer(new DenseLayer.Builder()
+						.nIn(nHidden[2])
+						.nOut(nHidden[3])
+						.activation(Activation.RELU)
+						.build())
+				.layer(new OutputLayer.Builder()
+						.nIn(nHidden[3])
 						.nOut(nOut)
 						.activation(Activation.SOFTMAX)
 						.build())
