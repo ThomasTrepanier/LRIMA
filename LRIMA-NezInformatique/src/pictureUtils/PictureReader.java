@@ -17,19 +17,20 @@ public class PictureReader {
 	static final String TRAINING_FOLDER = "Data\\Fruit_Training\\";
 	static final String TEST_FOLDER = "Data\\Fruit_Test\\";
 	static final int NB_OF_FRUITS = 10; //TODO REWRITE SO FRUITS NB IS FOLDER AMOUNT
+	static final int PIXEL_CONSTANT = 10200000;
 
-	public static void loadFruits(float percent) throws IOException {
+	public static void loadFruits(float percent, boolean isSum) throws IOException {
 		String picture = "Apple Braeburn/0_100.jpg";
-		TrainingData[] tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent);
+		TrainingData[] tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent, isSum);
 		NeuralNetwork.tDataSet = tData;
-		TrainingData[] testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent);
+		TrainingData[] testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent, isSum);
 		NeuralNetwork.testSet = testData;
 	}
 	
-	public static TrainingData[][] loadFruitsDL4J(float percent) throws IOException {
+	public static TrainingData[][] loadFruitsDL4J(float percent, boolean isSum) throws IOException {
 		String picture = "Apple Braeburn/0_100.jpg";
-		TrainingData[] tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent);
-		TrainingData[] testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent);
+		TrainingData[] tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent, isSum);
+		TrainingData[] testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent, isSum);
 		
 		TrainingData[][] datas = {tData, testData};
 		return datas;
@@ -42,13 +43,13 @@ public class PictureReader {
 		return new TrainingData[nbOfPicutres];
 	}
 
-	private static TrainingData[] loadPicturesData(File file, String mainFolder, float percent) throws IOException {
+	private static TrainingData[] loadPicturesData(File file, String mainFolder, float percent, boolean isSum) throws IOException {
 		int indexAt = 0;
 		TrainingData[] datas = new TrainingData[StatUtil.getNbOfFiles(file)];
 		for (int j = 0; j < file.listFiles().length * percent; j++) {
 			File f = file.listFiles()[j];
 			if (f.isDirectory()) {
-				TrainingData[] subData = loadPicturesData(f, mainFolder, percent);
+				TrainingData[] subData = loadPicturesData(f, mainFolder, percent, isSum);
 				int i = 0;
 				for (i = 0; i < subData.length * percent; i++) {
 					datas[indexAt + i] = subData[i];
@@ -58,18 +59,22 @@ public class PictureReader {
 				String picturePath = f.getPath();
 //				System.out.println(picturePath);
 				String picture = picturePath.substring(picturePath.indexOf(mainFolder) + mainFolder.length());
-				datas[indexAt] = getPictureData(f, picture);
+				datas[indexAt] = getPictureData(f, picture, isSum);
 				indexAt++;
 			}
 		}
 		return datas;
 	}
 
-	private static TrainingData getPictureData(File f, String picture) throws IOException {
+	private static TrainingData getPictureData(File f, String picture, boolean isSum) throws IOException {
 		BufferedImage image = ImageIO.read(f);
 		int[] apexes = cropPicture(image);
 		int[][] pixelsData = getPixels(image, apexes);
-		float[] pictureData = convertToData(pixelsData);
+		float[] pictureData = null;
+		if(isSum)
+			pictureData = convertToDataSum(pixelsData);
+		else
+			pictureData = convertToDataInd(pixelsData);
 		TrainingData pictureTData = getTrainingData(pictureData, picture);
 		return pictureTData;
 	}
@@ -160,7 +165,7 @@ public class PictureReader {
 		return data;
 	}
 
-	private static float[] convertToData(int[][] pixels) {
+	private static float[] convertToDataSum(int[][] pixels) {
 		float[] data = new float[pixels.length];
 
 		for (int i = 0; i < pixels.length; i++) {
@@ -173,7 +178,18 @@ public class PictureReader {
 		}
 		return data;
 	}
+	
+	private static float[] convertToDataInd(int[][] pixels) {
+		float[] data = new float[pixels.length * pixels.length];
 
+		for (int i = 0; i < pixels.length; i++) {
+			for (int j = 0; j < pixels[0].length; j++) {
+				data[i * pixels[0].length + j]= pixels[i][j];
+			}
+		}
+		return data;
+	}
+	
 	private static TrainingData getTrainingData(float[] data, String pictureName) {
 		int slashId = pictureName.indexOf("\\");
 		String name = "";
@@ -185,7 +201,7 @@ public class PictureReader {
 		if (expectedIndex != -1) {
 			float[] expectedOutput = new float[NB_OF_FRUITS];
 			expectedOutput[expectedIndex] = 1f;
-			float[] normalizedData = normalizeData(data, 1020, 0.01f);
+			float[] normalizedData = normalizeData(data, PIXEL_CONSTANT / data.length, 0.01f);
 			return new TrainingData(normalizedData, expectedOutput);
 		}
 		return null;

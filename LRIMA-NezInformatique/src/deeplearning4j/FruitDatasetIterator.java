@@ -14,7 +14,7 @@ import pictureUtils.PictureReader;
 public class FruitDatasetIterator {
 	
 	public static DataSet[] loadTrainingSet(int batchSize, int seed) throws IOException {
-		TrainingData[][] fruitData = PictureReader.loadFruitsDL4J(1f);
+		TrainingData[][] fruitData = PictureReader.loadFruitsDL4J(1f, true);
 		TrainingData[] trainData = fruitData[0];
 		TrainingData[] testData = fruitData[1];
 		

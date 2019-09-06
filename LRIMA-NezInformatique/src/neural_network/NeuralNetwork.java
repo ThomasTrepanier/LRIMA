@@ -21,7 +21,7 @@ public class NeuralNetwork {
 		// Create the training data
 		try {
 			//MNIST_Loader.loadMnistDataSet();
-			pictureUtils.PictureReader.loadFruits(1f);
+			pictureUtils.PictureReader.loadFruits(1f, true);
 			System.out.println(tDataSet[0]);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

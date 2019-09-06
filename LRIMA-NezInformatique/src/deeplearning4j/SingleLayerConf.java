@@ -30,9 +30,9 @@ public class SingleLayerConf {
 		
 		int seed = 123; //Random value to shuffle the data
 		double learningRate = 0.005;
-		double momentum = 0.9;
+		double momentum = 0.75;
 		int batchSize = 100;
-		int epochs = 10;
+		int epochs = 20;
 		int nIn = nRows * nCols;
 		int[] nHidden = {1000, 800, 300, 80};
 		int nOut = 10;
@@ -68,7 +68,7 @@ public class SingleLayerConf {
 		System.out.println("Configuring network...");
 		MultiLayerNetwork model = initializeModel(seed, learningRate, momentum, nIn, nHidden, nOut);
 		
-		model.setListeners(new ScoreIterationListener(100)); //Prints score at every 1000 iterations
+		model.setListeners(new ScoreIterationListener(5)); //Prints score at every X iterations
 		
 		System.out.println("Training model...");
 		trainModel(model, trainingSet, epochs);
