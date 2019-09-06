@@ -34,7 +34,7 @@ public class SingleLayerConf {
 		int batchSize = 100;
 		int epochs = 20;
 		int nIn = nRows * nCols;
-		int[] nHidden = {1000, 800, 300, 80};
+		int[] nHidden = {5000, 1000, 500, 300, 80};
 		int nOut = 10;
 		
 		System.out.println("Loading dataset...");
@@ -44,7 +44,7 @@ public class SingleLayerConf {
 		DataSet trainingSet = null;
 		DataSet testSet = null;
 		try {
-			fruitData = FruitDatasetIterator.loadTrainingSet(batchSize, seed);
+			fruitData = FruitDatasetIterator.loadTrainingSet(batchSize, seed, false);
 			trainingSet = fruitData[0];
 			testSet = fruitData[1];
 			nIn = trainingSet.getFeatures().columns();
@@ -104,8 +104,13 @@ public class SingleLayerConf {
 						.nOut(nHidden[3])
 						.activation(Activation.RELU)
 						.build())
-				.layer(new OutputLayer.Builder()
+				.layer(new DenseLayer.Builder()
 						.nIn(nHidden[3])
+						.nOut(nHidden[4])
+						.activation(Activation.RELU)
+						.build())
+				.layer(new OutputLayer.Builder()
+						.nIn(nHidden[4])
 						.nOut(nOut)
 						.activation(Activation.SOFTMAX)
 						.build())

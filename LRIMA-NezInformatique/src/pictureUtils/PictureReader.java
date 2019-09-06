@@ -12,7 +12,6 @@ import neural_network.NeuralNetwork;
 import neural_network.StatUtil;
 import neural_network.TrainingData;
 
-//TODO: Store in csv
 //TODO: Load in batch
 public class PictureReader {
 
@@ -20,6 +19,7 @@ public class PictureReader {
 	static final String TEST_FOLDER = "Data\\Fruit_Test\\";
 	static final int NB_OF_FRUITS = 10; //TODO REWRITE SO FRUITS NB IS FOLDER AMOUNT
 	static final int PIXEL_CONSTANT = 10200000;
+	static final int WHITE_CONSTANT = 240;
 
 	public static void loadFruits(float percent, boolean isSum) throws IOException {
 		String picture = "Apple Braeburn/0_100.jpg";
@@ -37,6 +37,13 @@ public class PictureReader {
 		TrainingData[][] datas = {tData, testData};
 		return datas;
 	}
+	
+	public static TrainingData[] loadFruitsFromFolder(String folder, boolean isSum) throws IOException {
+		File fruitFile = new File(folder);
+		//System.out.println(fruitFile);
+		TrainingData[] data = loadPicturesData(fruitFile, folder, 1f, isSum);
+		return data;
+	}
 
 	private static TrainingData[] initializeTrainingData() {
 		int nbOfPicutres = 0;
@@ -50,6 +57,7 @@ public class PictureReader {
 		TrainingData[] datas = new TrainingData[StatUtil.getNbOfFiles(file)];
 		for (int j = 0; j < file.listFiles().length * percent; j++) {
 			File f = file.listFiles()[j];
+//			System.out.println(f);
 			if (f.isDirectory()) {
 				TrainingData[] subData = loadPicturesData(f, mainFolder, percent, isSum);
 				int i = 0;
@@ -59,9 +67,12 @@ public class PictureReader {
 				indexAt += i;
 			} else {
 				String picturePath = f.getPath();
-//				System.out.println(picturePath);
-				String picture = picturePath.substring(picturePath.indexOf(mainFolder) + mainFolder.length());
+				//System.out.println(picturePath);
+				
+				String picture = getPictureName(file, picturePath, mainFolder);
+				//System.out.println(picture);
 				datas[indexAt] = getPictureData(f, picture, isSum);
+				//System.out.println(datas[indexAt]);
 				indexAt++;
 			}
 		}
@@ -100,7 +111,7 @@ public class PictureReader {
 			for (int y = 0; y < h; y++) {
 				int pixel = image.getRGB(x, y);
 				int[] argb = getARGBValues(pixel);
-				if (argb[1] < 240 && argb[2] < 240 && argb[3] < 240) {
+				if (!isPixelWhite(argb)) {
 					croppedApex[0] = x;
 					break;
 				}
@@ -113,7 +124,7 @@ public class PictureReader {
 			for (int x = 0; x < w; x++) {
 				int pixel = image.getRGB(x, y);
 				int[] argb = getARGBValues(pixel);
-				if (argb[1] < 240 && argb[2] < 240 && argb[3] < 240) {
+				if (!isPixelWhite(argb)) {
 					croppedApex[1] = y;
 					break;
 				}
@@ -126,7 +137,7 @@ public class PictureReader {
 			for (int y = h - 1; y >= 0; y--) {
 				int pixel = image.getRGB(x, y);
 				int[] argb = getARGBValues(pixel);
-				if (argb[1] < 240 && argb[2] < 240 && argb[3] < 240) {
+				if (!isPixelWhite(argb)) {
 					croppedApex[2] = x;
 					break;
 				}
@@ -139,7 +150,7 @@ public class PictureReader {
 			for (int x = w - 1; x >= 0; x--) {
 				int pixel = image.getRGB(x, y);
 				int[] argb = getARGBValues(pixel);
-				if (argb[1] < 240 && argb[2] < 240 && argb[3] < 240) {
+				if (!isPixelWhite(argb)) {
 					croppedApex[3] = y;
 					break;
 				}
@@ -156,17 +167,26 @@ public class PictureReader {
 	private static int[][] getPixels(BufferedImage image, int[] apexes) {
 		int w = image.getWidth();
 		int h = image.getHeight();
-		int[][] data = new int[w * h][4];
+		int[][] data = new int[w * h][3];
 
 		for (int x = apexes[0]; x < apexes[2]; x++) {
 			for (int y = apexes[1]; y < apexes[3]; y++) {
 				int pixel = image.getRGB(x, y);
-				data[x * y] = getARGBValues(pixel);
+				int[] argbValue = getARGBValues(pixel);
+				int[] rgbValue = {argbValue[1], argbValue[2], argbValue[3]};
+				if(isPixelWhite(argbValue))
+					rgbValue = new int[3];
+				data[y + x *(apexes[3] - apexes[1])] = rgbValue;
+				//System.out.println("X/Y: " + x + "/" + y + " ArrayPos: " + (y + x *(apexes[3] - apexes[1])) + " Value: " + Arrays.toString(argbValue));
 			}
 		}
 		return data;
 	}
-
+	
+	private static boolean isPixelWhite(int[] argb) {
+		return argb[1] > WHITE_CONSTANT && argb[2] > WHITE_CONSTANT && argb[3] > WHITE_CONSTANT;
+	}
+	
 	private static float[] convertToDataSum(int[][] pixels) {
 		float[] data = new float[pixels.length];
 
@@ -182,7 +202,7 @@ public class PictureReader {
 	}
 	
 	private static float[] convertToDataInd(int[][] pixels) {
-		float[] data = new float[pixels.length * pixels.length];
+		float[] data = new float[pixels.length * pixels[0].length];
 
 		for (int i = 0; i < pixels.length; i++) {
 			for (int j = 0; j < pixels[0].length; j++) {
@@ -195,10 +215,14 @@ public class PictureReader {
 	private static TrainingData getTrainingData(float[] data, String pictureName) {
 		int slashId = pictureName.indexOf("\\");
 		String name = "";
-		for (int i = 0; i < slashId; i++) {
-			name += (pictureName.charAt(i) + "");
+		if(slashId < 0)
+			name = pictureName;
+		else {
+			for (int i = 0; i < slashId; i++) {
+				name += (pictureName.charAt(i) + "");
+			}
 		}
-
+		
 		int expectedIndex = getIndexOfPictureName(name);
 		if (expectedIndex != -1) {
 			float[] expectedOutput = new float[NB_OF_FRUITS];
@@ -207,6 +231,15 @@ public class PictureReader {
 			return new TrainingData(normalizedData, expectedOutput);
 		}
 		return null;
+	}
+	
+	private static String getPictureName(File file, String picturePath, String mainFolder) {
+		if(mainFolder.equals(TRAINING_FOLDER) || mainFolder.equals(TEST_FOLDER)) {
+			return picturePath.substring(picturePath.indexOf(mainFolder) + mainFolder.length());
+		} else {
+			return file.getName();
+		}
+		
 	}
 
 	private static int getIndexOfPictureName(String name) {
@@ -237,6 +270,7 @@ public class PictureReader {
 	}
 
 	private static float[] normalizeData(float[] data, float maxValue, float minValue) {
+		//System.out.println(data.length);
 		float[] normalizedData = new float[data.length];
 		for (int i = 0; i < data.length; i++) {
 			normalizedData[i] = data[i] / maxValue * 0.99f + minValue;

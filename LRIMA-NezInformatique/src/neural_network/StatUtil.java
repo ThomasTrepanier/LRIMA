@@ -192,6 +192,15 @@ public class StatUtil {
 		return sub_files;
 	}
 	
+	public static int getNbOfUpFolders(File file) {
+		int folders = 0;
+		for(File f : file.listFiles()) {
+			if(f.isDirectory())
+				folders++;
+		}
+		return folders;
+	}
+	
 	public static void saveNeurons(Layer[] layers, float accuracy) {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		String layersInfo = "";
