@@ -12,6 +12,8 @@ import neural_network.NeuralNetwork;
 import neural_network.StatUtil;
 import neural_network.TrainingData;
 
+//TODO: Store in csv
+//TODO: Load in batch
 public class PictureReader {
 
 	static final String TRAINING_FOLDER = "Data\\Fruit_Training\\";
