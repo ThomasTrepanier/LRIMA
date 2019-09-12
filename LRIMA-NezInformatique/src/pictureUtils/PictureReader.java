@@ -18,7 +18,7 @@ public class PictureReader {
 
 	static final String TRAINING_FOLDER = "Data\\Fruit_Training\\";
 	static final String TEST_FOLDER = "Data\\Fruit_Test\\";
-	static final int NB_OF_FRUITS = 5;
+	static final int NB_OF_FRUITS = 2;
 	static final int PIXEL_CONSTANT = 10200000;
 	static final int WHITE_CONSTANT = 240;
 
@@ -189,7 +189,13 @@ public class PictureReader {
 		int w = image.getWidth();
 		int h = image.getHeight();
 		int[][] data = new int[w * h][3];
-
+		
+		//NO APEX
+		apexes[0] = 0;
+		apexes[2] = w;
+		apexes[1] = 0;
+		apexes[3] = h;
+		
 		for (int x = apexes[0]; x < apexes[2]; x++) {
 			for (int y = apexes[1]; y < apexes[3]; y++) {
 				int pixel = image.getRGB(x, y);
@@ -267,9 +273,9 @@ public class PictureReader {
 		switch (name) {
 		case ("Apple Braeburn"):
 			return 0;
-		case ("Banana"):
-			return 1;
 		case ("Avocado"):
+			return 1;
+		case ("Banana"):
 			return 2;
 		case ("Cherry 1"):
 			return 3;

@@ -1,0 +1,127 @@
+Deeplearning4j OOM Exception Encountered for MultiLayerNetwork
+Timestamp:                              2019-09-11 22:27:14.015
+Thread ID                               1
+Thread Name                             main
+
+
+Stack Trace:
+java.lang.OutOfMemoryError: Failed to allocate [2026217600] bytes
+	at org.nd4j.linalg.cpu.nativecpu.CpuMemoryManager.allocate(CpuMemoryManager.java:51)
+	at org.nd4j.linalg.memory.abstracts.Nd4jWorkspace.alloc(Nd4jWorkspace.java:423)
+	at org.nd4j.linalg.memory.abstracts.Nd4jWorkspace.alloc(Nd4jWorkspace.java:322)
+	at org.nd4j.linalg.api.buffer.BaseDataBuffer.<init>(BaseDataBuffer.java:737)
+	at org.nd4j.linalg.api.buffer.FloatBuffer.<init>(FloatBuffer.java:58)
+	at org.nd4j.linalg.api.buffer.factory.DefaultDataBufferFactory.create(DefaultDataBufferFactory.java:308)
+	at org.nd4j.linalg.factory.Nd4j.createBuffer(Nd4j.java:1494)
+	at org.nd4j.linalg.api.ndarray.BaseNDArray.<init>(BaseNDArray.java:343)
+	at org.nd4j.linalg.cpu.nativecpu.NDArray.<init>(NDArray.java:193)
+	at org.nd4j.linalg.cpu.nativecpu.CpuNDArrayFactory.createUninitialized(CpuNDArrayFactory.java:199)
+	at org.nd4j.linalg.factory.Nd4j.createUninitialized(Nd4j.java:4729)
+	at org.nd4j.linalg.api.shape.Shape.toOffsetZeroCopyHelper(Shape.java:666)
+	at org.nd4j.linalg.api.shape.Shape.toOffsetZeroCopy(Shape.java:641)
+	at org.nd4j.linalg.api.ndarray.BaseNDArray.dup(BaseNDArray.java:1840)
+	at org.nd4j.linalg.api.ndarray.BaseNDArray.dup(BaseNDArray.java:1816)
+	at org.deeplearning4j.nn.layers.mkldnn.MKLDNNSubsamplingHelper.backpropGradient(MKLDNNSubsamplingHelper.java:72)
+	at org.deeplearning4j.nn.layers.convolution.subsampling.SubsamplingLayer.backpropGradient(SubsamplingLayer.java:143)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.calcBackpropGradients(MultiLayerNetwork.java:1898)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.computeGradientAndScore(MultiLayerNetwork.java:2684)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.computeGradientAndScore(MultiLayerNetwork.java:2627)
+	at org.deeplearning4j.optimize.solvers.BaseOptimizer.gradientAndScore(BaseOptimizer.java:160)
+	at org.deeplearning4j.optimize.solvers.StochasticGradientDescent.optimize(StochasticGradientDescent.java:63)
+	at org.deeplearning4j.optimize.Solver.optimize(Solver.java:52)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.fitHelper(MultiLayerNetwork.java:2231)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.fit(MultiLayerNetwork.java:2189)
+	at org.deeplearning4j.nn.multilayer.MultiLayerNetwork.fit(MultiLayerNetwork.java:2252)
+	at deeplearning4j.ModelUtils.trainModel(ModelUtils.java:13)
+	at deeplearning4j.ConvolutionnalNetwork.main(ConvolutionnalNetwork.java:79)
+
+
+========== Memory Information ==========
+----- Version Information -----
+Deeplearning4j Version                  1.0.0-beta4
+Deeplearning4j CUDA                     <not present>
+
+----- System Information -----
+Operating System                        Microsoft Windows 10
+CPU                                     Intel(R) Core(TM) i5-9600K CPU @ 3.70GHz
+CPU Cores - Physical                    6
+CPU Cores - Logical                     6
+Total System Memory                      15,94 GiB (17110974464)
+
+----- ND4J Environment Information -----
+Data Type                               FLOAT
+blas.vendor                             MKL
+os                                      Windows 10
+backend                                 CPU
+
+----- Memory Configuration -----
+JVM Memory: XMX                           3,98 GiB (4278190080)
+JVM Memory: current                     170,00 MiB (178257920)
+JavaCPP Memory: Max Bytes                 3,98 GiB (4278190080)
+JavaCPP Memory: Max Physical              7,97 GiB (8556380160)
+JavaCPP Memory: Current Bytes           899,68 MiB (943382381)
+JavaCPP Memory: Current Physical          5,53 GiB (5933785088)
+Periodic GC Enabled                     false
+
+----- Workspace Information -----
+Workspaces: # for current thread        4
+Current thread workspaces:
+  Name                      State       Size                          # Cycles            
+  WS_LAYER_WORKING_MEM      CLOSED           ,00 B                    8                   
+  WS_ALL_LAYERS_ACT         CLOSED        7,20 GiB (7734269340)       1                   
+  WS_LAYER_ACT_2            CLOSED           ,00 B                    2                   
+  WS_LAYER_ACT_1            CLOSED           ,00 B                    1                   
+Workspaces total size                     7,20 GiB (7734269340)
+
+----- Network Information -----
+Network # Parameters                    12132080
+Parameter Memory                         46,28 MiB (48528320)
+Parameter Gradients Memory               46,28 MiB (48528320)
+Updater Number of Elements              12132080
+Updater Memory                           46,28 MiB (48528320)
+Updater Classes:
+  org.nd4j.linalg.learning.NesterovsUpdater
+Params + Gradient + Updater Memory       92,56 MiB (97056640)
+Iteration Count                         0
+Epoch Count                             0
+Backprop Type                           Standard
+Workspace Mode: Training                ENABLED
+Workspace Mode: Inference               ENABLED
+Number of Layers                        6
+Layer Counts
+  ConvolutionLayer                        2
+  DenseLayer                              1
+  OutputLayer                             1
+  SubsamplingLayer                        2
+Layer Parameter Breakdown
+  Idx Name                 Layer Type           Layer # Parameters   Layer Parameter Memory
+  0   layer0               ConvolutionLayer     1520                   5,94 KiB (6080)   
+  1   layer1               SubsamplingLayer     0                         ,00 B          
+  2   layer2               ConvolutionLayer     25050                 97,85 KiB (100200) 
+  3   layer3               SubsamplingLayer     0                         ,00 B          
+  4   layer4               DenseLayer           12100500              46,16 MiB (48402000)
+  5   layer5               OutputLayer          5010                  19,57 KiB (20040)  
+
+----- Layer Helpers - Memory Use -----
+Total Helper Count                      4
+Helper Count w/ Memory                  0
+Total Helper Persistent Memory Use           ,00 B
+
+----- Network Activations: Inferred Activation Shapes -----
+Current Minibatch Size                  5233
+Input Shape                             [5233, 30000]
+Idx Name                 Layer Type           Activations Type                           Activations Shape    # Elements   Memory      
+0   layer0               ConvolutionLayer     InputTypeConvolutional(h=96,w=96,c=20)     [5233, 20, 96, 96]   964546560      3,59 GiB (3858186240)
+1   layer1               SubsamplingLayer     InputTypeConvolutional(h=48,w=48,c=20)     [5233, 20, 48, 48]   241136640    919,86 MiB (964546560)
+2   layer2               ConvolutionLayer     InputTypeConvolutional(h=44,w=44,c=50)     [5233, 50, 44, 44]   506554400      1,89 GiB (2026217600)
+3   layer3               SubsamplingLayer     InputTypeConvolutional(h=22,w=22,c=50)     [5233, 50, 22, 22]   126638600    483,09 MiB (506554400)
+4   layer4               DenseLayer           InputTypeFeedForward(500)                  [5233, 500]          2616500        9,98 MiB (10466000)
+5   layer5               OutputLayer          InputTypeFeedForward(10)                   [5233, 10]           52330        204,41 KiB (209320)
+Total Activations Memory                  6,86 GiB (7366180120)
+Total Activations Memory (per ex)         1,34 MiB (1407640)
+Total Activation Gradient Mem.            7,44 GiB (7993930800)
+Total Activation Gradient Mem. (per ex)   1,46 MiB (1527600)
+
+----- Network Training Listeners -----
+Number of Listeners                     1
+Listener 0                              ScoreIterationListener(10)

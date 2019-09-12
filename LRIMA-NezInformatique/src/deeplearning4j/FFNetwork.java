@@ -4,6 +4,7 @@ import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
@@ -22,7 +23,7 @@ import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
-public class SingleLayerConf {
+public class FFNetwork {
 
 	public static void main(String[] args) {
 		int nRows = 28; //MNIST format
@@ -31,10 +32,10 @@ public class SingleLayerConf {
 		int seed = 123; //Random value to shuffle the data
 		double learningRate = 0.005;
 		double momentum = 0.75;
-		int batchSize = 100;
-		int epochs = 20;
+		int batchSize = 200;
+		int epochs = 100;
 		int nIn = nRows * nCols;
-		int[] nHidden = {5000, 1000, 500, 300, 80};
+		int[] nHidden = {32, 16};
 		int nOut = 10;
 		
 		System.out.println("Loading dataset...");
@@ -66,18 +67,17 @@ public class SingleLayerConf {
 		}*/
 		
 		System.out.println("Configuring network...");
-		MultiLayerNetwork model = initializeModel(seed, learningRate, momentum, nIn, nHidden, nOut);
-		
-		model.setListeners(new ScoreIterationListener(5)); //Prints score at every X iterations
+		MultiLayerNetwork model = initializeFFModel(seed, learningRate, momentum, nIn, nHidden, nOut);
+		model.addListeners(new ScoreIterationListener(5)); //Prints score at every X iterations
 		
 		System.out.println("Training model...");
-		trainModel(model, trainingSet, epochs);
+		ModelUtils.trainModel(model, trainingSet, epochs);
 		
 		System.out.println("Evaluate model...");
-		evaluateModel(model, testSet);
+		ModelUtils.evaluateModel(model, testSet);
 	}
 	
-	private static MultiLayerNetwork initializeModel(int seed, double learningRate, double momentum, int nIn, int[] nHidden, int nOut) {
+	private static MultiLayerNetwork initializeFFModel(int seed, double learningRate, double momentum, int nIn, int[] nHidden, int nOut) {
 		MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
 				.seed(seed)
 				.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
@@ -94,23 +94,8 @@ public class SingleLayerConf {
 						.nOut(nHidden[1])
 						.activation(Activation.RELU)
 						.build())
-				.layer(new DenseLayer.Builder()
-						.nIn(nHidden[1])
-						.nOut(nHidden[2])
-						.activation(Activation.RELU)
-						.build())
-				.layer(new DenseLayer.Builder()
-						.nIn(nHidden[2])
-						.nOut(nHidden[3])
-						.activation(Activation.RELU)
-						.build())
-				.layer(new DenseLayer.Builder()
-						.nIn(nHidden[3])
-						.nOut(nHidden[4])
-						.activation(Activation.RELU)
-						.build())
 				.layer(new OutputLayer.Builder()
-						.nIn(nHidden[4])
+						.nIn(nHidden[1])
 						.nOut(nOut)
 						.activation(Activation.SOFTMAX)
 						.build())
@@ -119,25 +104,5 @@ public class SingleLayerConf {
 		MultiLayerNetwork model = new MultiLayerNetwork(conf);
 		model.init();
 		return model;
-	}
-
-	private static void trainModel(MultiLayerNetwork model, DataSet trainingSet, int epochs) {
-		for(int i = 0; i < epochs; i++) {
-			model.fit(trainingSet);
-		}
-	}
-	private static void trainModel(MultiLayerNetwork model, DataSetIterator trainingSet, int epochs) {
-		model.fit(trainingSet, epochs);
-	}
-	
-	private static void evaluateModel(MultiLayerNetwork model, DataSet testSet) {
-		INDArray outputs = model.output(testSet.getFeatures());
-		Evaluation eval = new Evaluation();
-		eval.eval(testSet.getLabels(), outputs);
-		System.out.println(eval.stats());
-	}
-	private static void evaluateModel(MultiLayerNetwork model, DataSetIterator testSet) {
-		Evaluation eval = model.evaluate(testSet);
-		System.out.println(eval.stats());
 	}
 }
