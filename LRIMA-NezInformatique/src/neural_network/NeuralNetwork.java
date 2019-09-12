@@ -1,6 +1,7 @@
 package neural_network;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class NeuralNetwork {
 
@@ -8,8 +9,8 @@ public class NeuralNetwork {
 	static Layer[] layers; // My changes
 
 	// Training data
-	public static TrainingData[] tDataSet; // My changes
-	public static TrainingData[] testSet;
+	public static ArrayList<TrainingData> tDataSet; // My changes
+	public static ArrayList<TrainingData> testSet;
 
 	// Main Method
 	public static void main(String[] args) {
@@ -22,16 +23,16 @@ public class NeuralNetwork {
 		try {
 			//MNIST_Loader.loadMnistDataSet();
 			pictureUtils.PictureReader.loadFruits(1f, true);
-			System.out.println(tDataSet[0]);
+			System.out.println(tDataSet.get(0));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		//Gets the number of inputs to initialize weights
-		float nbInput = tDataSet[0].data.length;
-		int nOut = tDataSet[0].expectedOutput.length;
-		System.out.println(tDataSet[0].data.length);
+		float nbInput = tDataSet.get(0).data.length;
+		int nOut = tDataSet.get(0).expectedOutput.length;
+		System.out.println(tDataSet.get(0).data.length);
 		//(float) (-1/Math.sqrt(nbInput)), (float) (1/Math.sqrt(nbInput))
 		Neuron.setRangeWeights(-1 , 1);
 
@@ -61,7 +62,7 @@ public class NeuralNetwork {
 //		System.out.println("============");
 //		mnistOutput(0.01f);
 		long executionStartTime = System.nanoTime();
-		forward(testSet[0].data);
+		forward(testSet.get(0).data);
 		System.out.println("Execution time is " + (System.nanoTime() - executionStartTime) / 100000000.0 + "s");
 		
 		System.out.println("Training...");
@@ -91,15 +92,15 @@ public class NeuralNetwork {
 		float[] expectedOutput4 = new float[] { 0 };
 
 		// My changes (using an array for the data sets)
-		tDataSet = new TrainingData[4];
-		tDataSet[0] = new TrainingData(input1, expectedOutput1);
-		tDataSet[1] = new TrainingData(input2, expectedOutput2);
-		tDataSet[2] = new TrainingData(input3, expectedOutput3);
-		tDataSet[3] = new TrainingData(input4, expectedOutput4);
+		tDataSet = new ArrayList<TrainingData>();
+		tDataSet.set(0, new TrainingData(input1, expectedOutput1));
+		tDataSet.set(1, new TrainingData(input2, expectedOutput2));
+		tDataSet.set(2, new TrainingData(input3, expectedOutput3));
+		tDataSet.set(3, new TrainingData(input4, expectedOutput4));
 	}
 
 	public static void CreateTestData(int nbTest) {
-		testSet = new TrainingData[nbTest];
+		testSet = new ArrayList<TrainingData>();
 
 		for (int i = 0; i < nbTest; i++) {
 			float a = StatUtil.RandomFloat(0, 1);
@@ -119,7 +120,7 @@ public class NeuralNetwork {
 				input = new float[] { 1f, 1f };
 				output = new float[] { 0 };
 			}
-			testSet[i] = new TrainingData(input, output);
+			testSet.set(i, new TrainingData(input, output));
 			// System.out.println(testSet[i]);
 		}
 
@@ -212,29 +213,29 @@ public class NeuralNetwork {
 
 	// This function is used to train being forward and backward.
 	public static void train(int epoch, float learning_rate, float percentageOfDataSetToUse) {
-		TrainingData[] data = tDataSet;
+		ArrayList<TrainingData> data = tDataSet;
 		for(int i = 0; i < epoch; i++) {
 			System.out.println("Epoch: " + i);
-    		for(int j = 0; j < tDataSet.length * percentageOfDataSetToUse; j++) {
-    			if(tDataSet[j] == null) {
-    				System.out.println(tDataSet[j] + "-" + data[j] + j);
+    		for(int j = 0; j < tDataSet.size() * percentageOfDataSetToUse; j++) {
+    			if(tDataSet.get(j) == null) {
+    				System.out.println(tDataSet.get(j) + "-" + data.get(j) + j);
     			}
     			else {
-    				forward(tDataSet[j].data);
-        			backward(learning_rate,tDataSet[j]);
+    				forward(tDataSet.get(j).data);
+        			backward(learning_rate,tDataSet.get(j));
     			}
     		}
     	}
 	}
 
 	private static void oneOutputPass() {
-		for (int i = 0; i < testSet.length; i++) {
-			forward(testSet[i].data);
+		for (int i = 0; i < testSet.size(); i++) {
+			forward(testSet.get(i).data);
 			float output = 0;
 			float expected = 0;
 			for(int j = 0; j < layers[layers.length - 1].neurons.length; j++) {
 				output = layers[layers.length - 1].neurons[j].value;
-				expected = testSet[i].expectedOutput[0];
+				expected = testSet.get(i).expectedOutput[0];
 			}
 		
 			System.out.println("Output is: " + output + " expected: " + expected);
@@ -244,11 +245,11 @@ public class NeuralNetwork {
 	private static float evaluateOneOutputAccuracy(float margin) {
 		float sucess = 0;
 		float fail = 0;
-		for (int i = 0; i < testSet.length; i++) {
-			forward(testSet[i].data);
+		for (int i = 0; i < testSet.size(); i++) {
+			forward(testSet.get(i).data);
 			for (int j = 0; j < layers[layers.length - 1].neurons.length; j++) { // For all neurons in final layer
 				float output = layers[layers.length - 1].neurons[j].value;
-				float expected = testSet[i].expectedOutput[0];
+				float expected = testSet.get(i).expectedOutput[0];
 				if (Math.abs(output - expected) < margin)
 					sucess++;
 				else
@@ -259,12 +260,12 @@ public class NeuralNetwork {
 	}
 	
 	private static void mnistOutput(float percentToShow) {
-		for (int i = 0; i < (float) testSet.length * percentToShow; i++) {
-			forward(testSet[i].data);
+		for (int i = 0; i < (float) testSet.size() * percentToShow; i++) {
+			forward(testSet.get(i).data);
 			
 			int expected = 0;
-			for(int j = 0; j < testSet[i].expectedOutput.length; j++) {
-				if(testSet[i].expectedOutput[j] == 1f) {
+			for(int j = 0; j < testSet.get(i).expectedOutput.length; j++) {
+				if(testSet.get(i).expectedOutput[j] == 1f) {
 					expected = j;
 					break;
 				}
@@ -287,8 +288,8 @@ public class NeuralNetwork {
 	private static float evaluateMNISTAccuracy() {
 		float sucess = 0;
 		float fail = 0;
-		for (int i = 0; i < testSet.length; i++) {
-			forward(testSet[i].data);
+		for (int i = 0; i < testSet.size(); i++) {
+			forward(testSet.get(i).data);
 			for (int j = 0; j < layers[layers.length - 1].neurons.length; j++) { // For all neurons in final layer
 				int output = 0;
 				float highest = layers[layers.length - 1].neurons[0].value;
@@ -302,8 +303,8 @@ public class NeuralNetwork {
 				}
 
 				int expected = 0;
-				for (int k = 0; k < testSet[i].expectedOutput.length; k++) {
-					if (testSet[i].expectedOutput[k] == 1f) {
+				for (int k = 0; k < testSet.get(i).expectedOutput.length; k++) {
+					if (testSet.get(i).expectedOutput[k] == 1f) {
 						expected = k;
 						break;
 					}

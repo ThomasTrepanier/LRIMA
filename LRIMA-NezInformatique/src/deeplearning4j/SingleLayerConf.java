@@ -58,8 +58,8 @@ public class SingleLayerConf {
 		/*try {
 			trainingSetIterator = new MnistDataSetIterator(batchSize, true, seed);
 			testSetIterator = new MnistDataSetIterator(batchSize, true, seed);
-			nIn = trainingSetIterator.getFeatures().columns();
-			nOut = trainingSetIterator.getLabels().columns();
+			nIn = trainingSetIterator.inputColumns();
+			nOut = trainingSetIterator.totalOutcomes();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

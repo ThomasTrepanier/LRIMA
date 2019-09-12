@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.imageio.ImageIO;
@@ -17,31 +18,33 @@ public class PictureReader {
 
 	static final String TRAINING_FOLDER = "Data\\Fruit_Training\\";
 	static final String TEST_FOLDER = "Data\\Fruit_Test\\";
-	static final int NB_OF_FRUITS = 10; //TODO REWRITE SO FRUITS NB IS FOLDER AMOUNT
+	static final int NB_OF_FRUITS = 5;
 	static final int PIXEL_CONSTANT = 10200000;
 	static final int WHITE_CONSTANT = 240;
 
 	public static void loadFruits(float percent, boolean isSum) throws IOException {
 		String picture = "Apple Braeburn/0_100.jpg";
-		TrainingData[] tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent, isSum);
+		ArrayList<TrainingData> tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent, isSum);
 		NeuralNetwork.tDataSet = tData;
-		TrainingData[] testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent, isSum);
+		ArrayList<TrainingData> testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent, isSum);
 		NeuralNetwork.testSet = testData;
 	}
 	
-	public static TrainingData[][] loadFruitsDL4J(float percent, boolean isSum) throws IOException {
+	public static ArrayList<TrainingData>[] loadFruitsDL4J(float percent, boolean isSum) throws IOException {
 		String picture = "Apple Braeburn/0_100.jpg";
-		TrainingData[] tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent, isSum);
-		TrainingData[] testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent, isSum);
+		ArrayList<TrainingData> tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent, isSum);
+		ArrayList<TrainingData> testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent, isSum);
 		
-		TrainingData[][] datas = {tData, testData};
+		ArrayList<TrainingData>[] datas = new ArrayList[2];
+		datas[0] = tData;
+		datas[1] = testData;
 		return datas;
 	}
 	
-	public static TrainingData[] loadFruitsFromFolder(String folder, boolean isSum) throws IOException {
+	public static ArrayList<TrainingData> loadFruitsFromFolder(String folder, boolean isSum) throws IOException {
 		File fruitFile = new File(folder);
 		//System.out.println(fruitFile);
-		TrainingData[] data = loadPicturesData(fruitFile, folder, 1f, isSum);
+		ArrayList<TrainingData> data = loadPicturesData(fruitFile, folder, 1f, isSum);
 		return data;
 	}
 
@@ -52,17 +55,32 @@ public class PictureReader {
 		return new TrainingData[nbOfPicutres];
 	}
 
-	private static TrainingData[] loadPicturesData(File file, String mainFolder, float percent, boolean isSum) throws IOException {
+	private static ArrayList<TrainingData> loadPicturesData(File file, String mainFolder, float percent, boolean isSum) throws IOException {
 		int indexAt = 0;
-		TrainingData[] datas = new TrainingData[StatUtil.getNbOfFiles(file)];
-		for (int j = 0; j < file.listFiles().length * percent; j++) {
+		ArrayList<TrainingData> datas = new ArrayList<TrainingData>();
+		
+		String fileName = file.toString() + "\\";
+		System.out.println(fileName);
+		
+		//Determines how many files to load, if in the main, only load fruit number amount
+		int filesToIterate = 0;
+		if(fileName.toString().equals(TRAINING_FOLDER) || fileName.toString().equals(TEST_FOLDER)) {
+			filesToIterate = NB_OF_FRUITS;
+			System.out.println(file.listFiles().length);
+		} else
+			filesToIterate = file.listFiles().length;
+		
+		for (int j = 0; j < filesToIterate; j++) {
 			File f = file.listFiles()[j];
 //			System.out.println(f);
 			if (f.isDirectory()) {
-				TrainingData[] subData = loadPicturesData(f, mainFolder, percent, isSum);
+				ArrayList<TrainingData> subData = loadPicturesData(f, mainFolder, percent, isSum);
 				int i = 0;
-				for (i = 0; i < subData.length * percent; i++) {
-					datas[indexAt + i] = subData[i];
+				for (i = 0; i < subData.size() * percent; i++) {
+					if(datas.size() - 1< indexAt + i) {
+						datas.add(subData.get(i));
+					} else
+						datas.set(indexAt + i, subData.get(i));
 				}
 				indexAt += i;
 			} else {
@@ -71,7 +89,10 @@ public class PictureReader {
 				
 				String picture = getPictureName(file, picturePath, mainFolder);
 				//System.out.println(picture);
-				datas[indexAt] = getPictureData(f, picture, isSum);
+				if(datas.size() - 1 < indexAt) {
+					datas.add(getPictureData(f, picture, isSum));
+				} else
+					datas.set(indexAt, getPictureData(f, picture, isSum));
 				//System.out.println(datas[indexAt]);
 				indexAt++;
 			}

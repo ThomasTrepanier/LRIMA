@@ -2,6 +2,7 @@ package deeplearning4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -14,15 +15,15 @@ import pictureUtils.PictureReader;
 public class FruitDatasetIterator {
 	
 	public static DataSet[] loadTrainingSet(int batchSize, int seed, boolean isSum) throws IOException {
-		TrainingData[][] fruitData = PictureReader.loadFruitsDL4J(1f, isSum);
-		TrainingData[] trainData = fruitData[0];
-		TrainingData[] testData = fruitData[1];
+		ArrayList<TrainingData>[] fruitData = PictureReader.loadFruitsDL4J(1f, isSum);
+		ArrayList<TrainingData> trainData = fruitData[0];
+		ArrayList<TrainingData> testData = fruitData[1];
 		
-		INDArray trainInputs = Nd4j.zeros(trainData.length, trainData[0].getData().length);
-		INDArray trainLabels = Nd4j.zeros(trainData.length, trainData[0].getLabels().length);
+		INDArray trainInputs = Nd4j.zeros(trainData.size(), trainData.get(0).getData().length);
+		INDArray trainLabels = Nd4j.zeros(trainData.size(), trainData.get(0).getLabels().length);
 		
-		INDArray testInputs = Nd4j.zeros(testData.length, testData[0].getData().length);
-		INDArray testLabels = Nd4j.zeros(testData.length, testData[0].getLabels().length);
+		INDArray testInputs = Nd4j.zeros(testData.size(), testData.get(0).getData().length);
+		INDArray testLabels = Nd4j.zeros(testData.size(), testData.get(0).getLabels().length);
 		
 		//Load training data
 		loadData(trainData, trainInputs, trainLabels);
@@ -40,15 +41,15 @@ public class FruitDatasetIterator {
 		return trainAndTestData;
 	}
 	
-	private static void loadData(TrainingData[] data, INDArray inputs, INDArray labels) {
-		for(int i = 0; i < data.length; i++) {
+	private static void loadData(ArrayList<TrainingData> data, INDArray inputs, INDArray labels) {
+		for(int i = 0; i < data.size(); i++) {
 			
-			float[] sampleData = data[i].getData().clone(); //Gets the sample data (pixels, normalized)
-			int labelIndex = getLabelIndex(data[i]); //Gets the index at which the label is 
-			float label = data[i].getLabels()[labelIndex]; //Gets the label for this sample
+			float[] sampleData = data.get(i).getData().clone(); //Gets the sample data (pixels, normalized)
+			int labelIndex = getLabelIndex(data.get(i)); //Gets the index at which the label is 
+			float label = data.get(i).getLabels()[labelIndex]; //Gets the label for this sample
 			labels.putScalar(new int[] {i, labelIndex}, label); //Puts the label in the labels INDArray
 			
-			for(int j = 0; j < data[0].getData().length; j++) {
+			for(int j = 0; j < data.get(0).getData().length; j++) {
 				inputs.putScalar(new int[] {i, j}, sampleData[j]); //Puts the pixel value in the inputs INDArray 
 			}
 		}

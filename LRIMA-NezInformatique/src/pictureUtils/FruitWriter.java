@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.sl.usermodel.Sheet;
@@ -85,9 +86,9 @@ public class FruitWriter {
 			File currentFruitFile = parentFile.listFiles()[i];
 			sheetName = oriSheetName + " - " + currentFruitFile.getName();
 			System.out.println("Current fruit file: " + currentFruitFile);
-			TrainingData[] currentFruitData = PictureReader.loadFruitsFromFolder(currentFruitFile.getPath(), isSum);
+			ArrayList<TrainingData> currentFruitData = PictureReader.loadFruitsFromFolder(currentFruitFile.getPath(), isSum);
 			try {
-				finishedAtRow = writeInExcelFile(DATA_FOLDER + FILE, sheetName, currentFruitData, finishedAtRow);
+				finishedAtRow = writeInExcelFile(DATA_FOLDER + FILE, sheetName, (TrainingData[]) currentFruitData.toArray(), finishedAtRow);
 			} catch (InvalidFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

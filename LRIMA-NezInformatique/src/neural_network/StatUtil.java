@@ -123,11 +123,11 @@ public class StatUtil {
 		NeuralNetwork.testSet = loadMNISTFile(mnistTest, setToLoad);
 		
 		normalizeMNIST();
-		System.out.println("Loaded " + NeuralNetwork.tDataSet.length + " training set");
-		System.out.println("Loaded " + NeuralNetwork.testSet.length + " test set");
+		System.out.println("Loaded " + NeuralNetwork.tDataSet.size() + " training set");
+		System.out.println("Loaded " + NeuralNetwork.testSet.size() + " test set");
 	}
 	
-	public static TrainingData[] loadMNISTFile(File file, int setToLoad) throws IOException {
+	public static ArrayList<TrainingData> loadMNISTFile(File file, int setToLoad) throws IOException {
 		ArrayList<String[]> content = new ArrayList<String[]>();
 		
 		try (BufferedReader br = new BufferedReader(new FileReader(file))){
@@ -143,7 +143,7 @@ public class StatUtil {
 			System.exit(0);
 		}
 		
-		TrainingData[] data = new TrainingData[content.size()];
+		ArrayList<TrainingData> data = new ArrayList<TrainingData>();
 		for(int i = 0; i < content.size(); i++) {
 			String[] line = content.get(i);
 			
@@ -152,7 +152,10 @@ public class StatUtil {
 			for(int j = 1; j < line.length; j++) {
 				input[j-1] = Float.parseFloat(line[j]);
 			}
-			data[i] = new TrainingData(input, expectedValue);
+			if(data.size() - 1 < i) {
+				data.add(new TrainingData(input, expectedValue));
+			} else
+				data.set(i, new TrainingData(input, expectedValue));
 		}
 		return data;
 	}
@@ -165,7 +168,7 @@ public class StatUtil {
 	}
 	
 	public static void normalizeMNIST() {
-		TrainingData[] data = NeuralNetwork.tDataSet;
+		ArrayList<TrainingData> data = NeuralNetwork.tDataSet;
 		for(TrainingData tData : data) {
 			for(int i = 0; i < tData.data.length; i++) {
 				tData.data[i] = tData.data[i] / 255f * 0.99f + 0.01f;

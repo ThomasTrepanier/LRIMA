@@ -1,5 +1,6 @@
 package neural_network;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MNIST_Loader {
 
@@ -16,9 +17,9 @@ public class MNIST_Loader {
         StatUtil.normalizeMNIST();
     }
     
-    private static TrainingData[] loadDataIn(MnistMatrix[] matrixArray) {
+    private static ArrayList<TrainingData> loadDataIn(MnistMatrix[] matrixArray) {
         int size = matrixArray[0].getNumberOfColumns()*matrixArray[0].getNumberOfRows();
-        TrainingData[] tData = new TrainingData[matrixArray.length];
+        ArrayList<TrainingData> tData = new ArrayList<TrainingData>();
         
         for(int i = 0; i < matrixArray.length; i++) {
         	MnistMatrix matrix = matrixArray[i];
@@ -32,7 +33,7 @@ public class MNIST_Loader {
             float[] expectedValue = new float[10];
             expectedValue[matrix.getLabel()] = 1f;
             
-            tData[i] = new TrainingData(data, expectedValue);
+            tData.set(i, new TrainingData(data, expectedValue));
         }
         return tData;
     }
