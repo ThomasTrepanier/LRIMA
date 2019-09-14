@@ -16,9 +16,9 @@ import neural_network.TrainingData;
 //TODO: Load in batch
 public class PictureReader {
 
-	static final String TRAINING_FOLDER = "Data\\Fruit_Training\\";
-	static final String TEST_FOLDER = "Data\\Fruit_Test\\";
-	static final int NB_OF_FRUITS = 2;
+	static final String TRAINING_FOLDER = "Data\\Fruits\\Fruit_Training\\";
+	static final String TEST_FOLDER = "Data\\Fruits\\Fruit_Test\\";
+	static final int NB_OF_FRUITS = 10;
 	static final int PIXEL_CONSTANT = 10200000;
 	static final int WHITE_CONSTANT = 240;
 

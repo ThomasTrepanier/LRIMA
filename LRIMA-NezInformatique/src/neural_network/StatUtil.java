@@ -224,7 +224,7 @@ public class StatUtil {
 		}
 	}
 	
-	private static String normalizeFileName(String fileName) {
+	public static String normalizeFileName(String fileName) {
 		String normalizedName = "";
 		for(int i = 0; i < fileName.length(); i++) {
 			char c = fileName.charAt(i);

@@ -74,7 +74,7 @@ public class FFNetwork {
 		ModelUtils.trainModel(model, trainingSet, epochs);
 		
 		System.out.println("Evaluate model...");
-		ModelUtils.evaluateModel(model, testSet);
+		ModelUtils.evaluateModel(model, testSet, true);
 	}
 	
 	private static MultiLayerNetwork initializeFFModel(int seed, double learningRate, double momentum, int nIn, int[] nHidden, int nOut) {
