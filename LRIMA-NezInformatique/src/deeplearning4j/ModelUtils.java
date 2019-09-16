@@ -66,7 +66,7 @@ public class ModelUtils {
         boolean saveUpdater = true;                                             //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
         model.save(locationToSave, saveUpdater);
 	}
-	public static void saveModelResults(MultiLayerNetwork model, Evaluation eval, long trainTime, int batchSize, int nbOfLabels, int channels) throws FileNotFoundException, IOException, EncryptedDocumentException, InvalidFormatException {
+	public static void saveModelResults(MultiLayerNetwork model, Evaluation eval, long trainTime, int batchSize, int nbOfLabels, int channels, int epochs, boolean usedTransform) throws FileNotFoundException, IOException, EncryptedDocumentException, InvalidFormatException {
 		File file = new File(SAVE_PATH + RESULTS_FILE);
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		double accuracy = eval.accuracy();
@@ -77,7 +77,6 @@ public class ModelUtils {
 			learning_rate = 0;
 		}
 		int nbOfLayers = model.getnLayers();
-		int epochs = model.getEpochCount();
 
 		String sheetName = ts.toString();
 		System.out.println("Writing... " + sheetName);
@@ -108,6 +107,9 @@ public class ModelUtils {
 			cell7.setCellValue(accuracy);
 			Cell cell8 = row.createCell(7);
 			cell8.setCellValue(trainTime);
+			Cell cell9 = row.createCell(8);
+			cell9.setCellValue(usedTransform);
+			
 			try {
 				FileOutputStream outputStream = new FileOutputStream(file);
 				workbook.write(outputStream);
@@ -140,6 +142,8 @@ public class ModelUtils {
 		cell7.setCellValue("Accuracy");
 		Cell cell8 = row.createCell(7);
 		cell8.setCellValue("Train Time");
+		Cell cell9 = row.createCell(8);
+		cell9.setCellValue("Used Transform");
 	}
 
 }
