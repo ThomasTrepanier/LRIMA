@@ -41,11 +41,12 @@ public class ModelUtils {
 		model.fit(trainingSet, epochs);
 	}
 
-	public static void evaluateModel(MultiLayerNetwork model, DataSet testSet, boolean showMatrix) {
+	public static Evaluation evaluateModel(MultiLayerNetwork model, DataSet testSet, boolean showMatrix) {
 		INDArray outputs = model.output(testSet.getFeatures());
 		Evaluation eval = new Evaluation();
 		eval.eval(testSet.getLabels(), outputs);
 		System.out.println(eval.stats(true, showMatrix));
+		return eval;
 	}
 
 	public static Evaluation evaluateModel(MultiLayerNetwork model, DataSetIterator testSet, boolean showMatrix) {

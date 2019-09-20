@@ -18,22 +18,24 @@ public class PictureReader {
 
 	static final String TRAINING_FOLDER = "Data\\Fruits\\Fruit_Training\\";
 	static final String TEST_FOLDER = "Data\\Fruits\\Fruit_Test\\";
+	static final String FF_TRAINING_FOLDER = "Data\\Fruits\\Fruit_Training_FF\\";
+	static final String FF_TEST_FOLDER = "Data\\Fruits\\Fruit_Test_FF\\";
 	static final int NB_OF_FRUITS = 10;
 	static final int PIXEL_CONSTANT = 10200000;
 	static final int WHITE_CONSTANT = 240;
 
 	public static void loadFruits(float percent, boolean isSum) throws IOException {
 		String picture = "Apple Braeburn/0_100.jpg";
-		ArrayList<TrainingData> tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent, isSum);
+		ArrayList<TrainingData> tData = loadPicturesData(new File(FF_TRAINING_FOLDER), FF_TRAINING_FOLDER, percent, isSum);
 		NeuralNetwork.tDataSet = tData;
-		ArrayList<TrainingData> testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent, isSum);
+		ArrayList<TrainingData> testData = loadPicturesData(new File(FF_TEST_FOLDER), FF_TEST_FOLDER, percent, isSum);
 		NeuralNetwork.testSet = testData;
 	}
 	
 	public static ArrayList<TrainingData>[] loadFruitsDL4J(float percent, boolean isSum) throws IOException {
 		String picture = "Apple Braeburn/0_100.jpg";
-		ArrayList<TrainingData> tData = loadPicturesData(new File(TRAINING_FOLDER), TRAINING_FOLDER, percent, isSum);
-		ArrayList<TrainingData> testData = loadPicturesData(new File(TEST_FOLDER), TEST_FOLDER, percent, isSum);
+		ArrayList<TrainingData> tData = loadPicturesData(new File(FF_TRAINING_FOLDER), FF_TRAINING_FOLDER, percent, isSum);
+		ArrayList<TrainingData> testData = loadPicturesData(new File(FF_TEST_FOLDER), FF_TEST_FOLDER, percent, isSum);
 		
 		ArrayList<TrainingData>[] datas = new ArrayList[2];
 		datas[0] = tData;
@@ -64,7 +66,7 @@ public class PictureReader {
 		
 		//Determines how many files to load, if in the main, only load fruit number amount
 		int filesToIterate = 0;
-		if(fileName.toString().equals(TRAINING_FOLDER) || fileName.toString().equals(TEST_FOLDER)) {
+		if(fileName.toString().equals(FF_TRAINING_FOLDER) || fileName.toString().equals(FF_TEST_FOLDER)) {
 			filesToIterate = NB_OF_FRUITS;
 			System.out.println(file.listFiles().length);
 		} else
@@ -261,7 +263,7 @@ public class PictureReader {
 	}
 	
 	private static String getPictureName(File file, String picturePath, String mainFolder) {
-		if(mainFolder.equals(TRAINING_FOLDER) || mainFolder.equals(TEST_FOLDER)) {
+		if(mainFolder.equals(FF_TRAINING_FOLDER) || mainFolder.equals(FF_TEST_FOLDER)) {
 			return picturePath.substring(picturePath.indexOf(mainFolder) + mainFolder.length());
 		} else {
 			return file.getName();

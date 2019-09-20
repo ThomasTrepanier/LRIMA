@@ -3,9 +3,12 @@ package deeplearning4j;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
@@ -25,7 +28,7 @@ import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 public class FFNetwork {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException, IOException {
 		int nRows = 28; //MNIST format
 		int nCols = 28; //MNIST format
 		
@@ -33,7 +36,7 @@ public class FFNetwork {
 		double learningRate = 0.005;
 		double momentum = 0.75;
 		int batchSize = 200;
-		int epochs = 100;
+		int epochs = 1000;
 		int nIn = nRows * nCols;
 		int[] nHidden = {32, 16};
 		int nOut = 10;
@@ -70,11 +73,27 @@ public class FFNetwork {
 		MultiLayerNetwork model = initializeFFModel(seed, learningRate, momentum, nIn, nHidden, nOut);
 		model.addListeners(new ScoreIterationListener(5)); //Prints score at every X iterations
 		
+		System.out.println("Training network...");
+		long startTime = System.currentTimeMillis();
+		
 		System.out.println("Training model...");
 		ModelUtils.trainModel(model, trainingSet, epochs);
+
+		long trainTime = (System.currentTimeMillis() - startTime) / 1000;
 		
 		System.out.println("Evaluate model...");
 		ModelUtils.evaluateModel(model, testSet, true);
+		
+		Evaluation eval = ModelUtils.evaluateModel(model, testSet, true);
+		try {
+			ModelUtils.saveModelResults(model, eval, trainTime, batchSize, nOut, nIn, epochs, false);
+		} catch (EncryptedDocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private static MultiLayerNetwork initializeFFModel(int seed, double learningRate, double momentum, int nIn, int[] nHidden, int nOut) {
