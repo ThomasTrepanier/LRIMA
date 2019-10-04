@@ -115,7 +115,7 @@ public class PictureReader {
 		return pictureTData;
 	}
 
-	private static int[] getARGBValues(int pixel) {
+	public static int[] getARGBValues(int pixel) {
 		int[] argb = new int[4];
 		argb[0] = (pixel >> 24) & 0xff;
 		argb[1] = (pixel >> 16) & 0xff;
