@@ -6,12 +6,15 @@ import java.util.Arrays;
 
 public class EdgeCropping {
 	//Bias toward center
+	double principalColorBias = 2;
+	double centerBias = 0.5;
 	public static BufferedImage crop(BufferedImage img, double tolerance) {
 		//Get center color
 		int xCenter = img.getWidth() / 2;
 		int yCenter = img.getHeight() / 2;
 		int centerColor = img.getRGB(xCenter, yCenter);
 		int[] argb = PictureReader.getARGBValues(centerColor);
+		
 		
 		int redMin = argb[1] - (int) (argb[1] * tolerance);
 		int redMax = argb[1] + (int) (argb[1] * tolerance);

@@ -16,13 +16,13 @@ import neural_network.TrainingData;
 //TODO: Load in batch
 public class PictureReader {
 
-	static final String TRAINING_FOLDER = "Data\\Fruits\\Fruit_Training\\";
-	static final String TEST_FOLDER = "Data\\Fruits\\Fruit_Test\\";
-	static final String FF_TRAINING_FOLDER = "Data\\Fruits\\Fruit_Training_FF\\";
-	static final String FF_TEST_FOLDER = "Data\\Fruits\\Fruit_Test_FF\\";
-	static final int NB_OF_FRUITS = 10;
-	static final int PIXEL_CONSTANT = 10200000;
-	static final int WHITE_CONSTANT = 240;
+	public static final String TRAINING_FOLDER = "Data\\Fruits\\Fruit_Training\\";
+	public static final String TEST_FOLDER = "Data\\Fruits\\Fruit_Test\\";
+	public static final String FF_TRAINING_FOLDER = "Data\\Fruits\\Fruit_Training_FF\\";
+	public static final String FF_TEST_FOLDER = "Data\\Fruits\\Fruit_Test_FF\\";
+	public static final int NB_OF_FRUITS = 10;
+	public static final int PIXEL_CONSTANT = 10200000;
+	public static final int WHITE_CONSTANT = 240;
 
 	public static void loadFruits(float percent, boolean isSum) throws IOException {
 		String picture = "Apple Braeburn/0_100.jpg";

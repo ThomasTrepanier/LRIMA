@@ -198,7 +198,7 @@ public class StatUtil {
 	public static int getNbOfUpFolders(File file) {
 		int folders = 0;
 		for(File f : file.listFiles()) {
-			if(f.isDirectory())
+			if(f != null && f.isDirectory())
 				folders++;
 		}
 		return folders;

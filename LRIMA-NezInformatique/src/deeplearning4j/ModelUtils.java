@@ -67,7 +67,7 @@ public class ModelUtils {
         boolean saveUpdater = true;                                             //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
         model.save(locationToSave, saveUpdater);
 	}
-	public static void saveModelResults(MultiLayerNetwork model, Evaluation eval, long trainTime, int batchSize, int nbOfLabels, int channels, int epochs, boolean usedTransform) throws FileNotFoundException, IOException, EncryptedDocumentException, InvalidFormatException {
+	public static void saveModelResults(String sheetName, MultiLayerNetwork model, Evaluation eval, long trainTime, int batchSize, int nbOfLabels, int channels, int epochs, boolean usedTransform) throws FileNotFoundException, IOException, EncryptedDocumentException, InvalidFormatException {
 		File file = new File(SAVE_PATH + RESULTS_FILE);
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		double accuracy = eval.accuracy();
@@ -79,11 +79,10 @@ public class ModelUtils {
 		}
 		int nbOfLayers = model.getnLayers();
 
-		String sheetName = ts.toString();
 		System.out.println("Writing... " + sheetName);
 		try (InputStream inp = new FileInputStream(file)) {
 			Workbook workbook = WorkbookFactory.create(inp);
-			XSSFSheet sheet = (XSSFSheet) workbook.getSheetAt(0);
+			XSSFSheet sheet = (XSSFSheet) workbook.getSheet(sheetName);
 			if (sheet == null) {
 				sheet = (XSSFSheet) workbook.createSheet();
 			}

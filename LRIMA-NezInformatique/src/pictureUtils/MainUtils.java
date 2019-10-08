@@ -13,15 +13,20 @@ import javax.imageio.ImageIO;
  *
  */
 public class MainUtils {
-	
-	static final String picture = "Data\\Fruits\\apple.jpg";
-	static final String outPath = "Data\\Fruits\\apple_cropped.jpg";
+    //Canny parameters
+    private static final double CANNY_THRESHOLD_RATIO = .2; //Suggested range .2 - .4
+    private static final int CANNY_STD_DEV = 1;             //Range 1-3
+    
+	public static final String picture = "Data\\Fruits\\apple.jpg";
+	static final String outPath = "Data\\Fruits\\apple_cropped_canny.jpg";
 	public static void main(String[] args) {
 		File file = new File(picture);
 		try {
 			long startTime = System.nanoTime();
 			BufferedImage img = ImageIO.read(file);
-			BufferedImage croppedImg = EdgeCropping.crop(img, 0.5);
+			BufferedImage croppedImg = null;
+//			croppedImg = EdgeCropping.crop(img, 0.5);
+			croppedImg = jcanny.JCanny.CannyEdges(img, CANNY_STD_DEV, CANNY_THRESHOLD_RATIO);
 			File outFile = new File(outPath);
 			boolean successful = ImageIO.write(croppedImg, "png", outFile);
 			System.out.println("Done " + successful + " " + (System.nanoTime() - startTime) / 1000000 + "ms");

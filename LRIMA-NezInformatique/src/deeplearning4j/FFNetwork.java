@@ -70,7 +70,7 @@ public class FFNetwork {
 		}*/
 		
 		System.out.println("Configuring network...");
-		MultiLayerNetwork model = initializeFFModel(seed, learningRate, momentum, nIn, nHidden, nOut);
+		MultiLayerNetwork model = ANNs.initializeFFModel(seed, learningRate, momentum, nIn, nHidden, nOut);
 		model.addListeners(new ScoreIterationListener(5)); //Prints score at every X iterations
 		
 		System.out.println("Training network...");
@@ -86,7 +86,7 @@ public class FFNetwork {
 		
 		Evaluation eval = ModelUtils.evaluateModel(model, testSet, true);
 		try {
-			ModelUtils.saveModelResults(model, eval, trainTime, batchSize, nOut, nIn, epochs, false);
+			ModelUtils.saveModelResults("Fruit Recognition", model, eval, trainTime, batchSize, nOut, nIn, epochs, false);
 		} catch (EncryptedDocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -94,34 +94,5 @@ public class FFNetwork {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	private static MultiLayerNetwork initializeFFModel(int seed, double learningRate, double momentum, int nIn, int[] nHidden, int nOut) {
-		MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-				.seed(seed)
-				.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-				.updater(new Nesterovs(learningRate, momentum))
-				.weightInit(WeightInit.XAVIER)
-				.list()
-				.layer(new DenseLayer.Builder()
-						.nIn(nIn)
-						.nOut(nHidden[0])
-						.activation(Activation.RELU)
-						.build())
-				.layer(new DenseLayer.Builder()
-						.nIn(nHidden[0])
-						.nOut(nHidden[1])
-						.activation(Activation.RELU)
-						.build())
-				.layer(new OutputLayer.Builder()
-						.nIn(nHidden[1])
-						.nOut(nOut)
-						.activation(Activation.SOFTMAX)
-						.build())
-				.build();
-		
-		MultiLayerNetwork model = new MultiLayerNetwork(conf);
-		model.init();
-		return model;
 	}
 }
