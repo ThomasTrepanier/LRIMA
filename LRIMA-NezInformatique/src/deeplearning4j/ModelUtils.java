@@ -31,6 +31,7 @@ public class ModelUtils {
 
 	static final String SAVE_PATH = "results\\";
 	static final String RESULTS_FILE = "DL4J-Results.xlsx";
+
 	public static void trainModel(MultiLayerNetwork model, DataSet trainingSet, int epochs) {
 		for (int i = 0; i < epochs; i++) {
 			model.fit(trainingSet);
@@ -54,20 +55,25 @@ public class ModelUtils {
 		System.out.println(eval.stats(true, showMatrix));
 		return eval;
 	}
-	
+
 	public static void saveModel(MultiLayerNetwork model, int nOut, int[] nHidden, double accuracy) throws IOException {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		String layersInfo = "";
-		for(int layer : nHidden) {
+		for (int layer : nHidden) {
 			layersInfo += layer;
 		}
 		String fileName = StatUtil.normalizeFileName(layersInfo + "_" + ts + "_" + accuracy);
-		
-        File locationToSave = new File(SAVE_PATH + fileName + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
-        boolean saveUpdater = true;                                             //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
-        model.save(locationToSave, saveUpdater);
+
+		File locationToSave = new File(SAVE_PATH + fileName + ".zip"); // Where to save the network. Note: the file is
+																		// in .zip format - can be opened externally
+		boolean saveUpdater = true; // Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you
+									// want to train your network more in the future
+		model.save(locationToSave, saveUpdater);
 	}
-	public static void saveModelResults(String sheetName, MultiLayerNetwork model, Evaluation eval, long trainTime, int batchSize, int nbOfLabels, int channels, int epochs, boolean usedTransform) throws FileNotFoundException, IOException, EncryptedDocumentException, InvalidFormatException {
+
+	public static void saveModelResults(String sheetName, MultiLayerNetwork model, Evaluation eval, long trainTime,
+			int batchSize, int nbOfLabels, int channels, int epochs, boolean usedTransform)
+			throws FileNotFoundException, IOException, EncryptedDocumentException, InvalidFormatException {
 		File file = new File(SAVE_PATH + RESULTS_FILE);
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		double accuracy = eval.accuracy();
@@ -86,9 +92,10 @@ public class ModelUtils {
 			if (sheet == null) {
 				sheet = (XSSFSheet) workbook.createSheet();
 			}
-			
-			if(sheet.getRow(0) == null) initializeHeaders(sheet);
-			
+
+			if (sheet.getRow(0) == null)
+				initializeHeaders(sheet);
+
 			int startRow = sheet.getPhysicalNumberOfRows();
 			Row row = sheet.createRow(startRow);
 			Cell cell1 = row.createCell(0);
@@ -109,7 +116,7 @@ public class ModelUtils {
 			cell8.setCellValue(trainTime);
 			Cell cell9 = row.createCell(8);
 			cell9.setCellValue(usedTransform);
-			
+
 			try {
 				FileOutputStream outputStream = new FileOutputStream(file);
 				workbook.write(outputStream);
@@ -123,7 +130,7 @@ public class ModelUtils {
 		}
 
 	}
-	
+
 	private static void initializeHeaders(XSSFSheet sheet) {
 		Row row = sheet.createRow(0);
 		Cell cell1 = row.createCell(0);
@@ -146,4 +153,56 @@ public class ModelUtils {
 		cell9.setCellValue("Used Transform");
 	}
 
+	public static boolean saveEvaluationModel(MultiLayerNetwork model, String aliment, double accuracy, int examples) {
+		String name = "evaluate-" + aliment + "-" + accuracy + "-" + examples;
+
+		File locationToSave = new File(SAVE_PATH + name + ".zip"); // Where to save the network. Note: the file is in
+																	// .zip format - can be opened externally
+		boolean saveUpdater = true; // Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you
+									// want to train your network more in the future
+		try {
+			model.save(locationToSave, saveUpdater);
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static MultiLayerNetwork loadModel(ModelJob job, String aliment, boolean loadUpdater) {
+		File savedModel = getModelFile(job, aliment);
+		if(savedModel != null) {
+			try {
+				return MultiLayerNetwork.load(savedModel, loadUpdater);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	private static File getModelFile(ModelJob job, String aliment) {
+		String modelName = getSavedName(job, aliment);
+		System.out.println(modelName);
+		if(modelName.equals("")) {
+			return null;
+		}
+		
+		File parentFolder = new File(SAVE_PATH);
+		for(File f : parentFolder.listFiles()) {
+			if(f.getName().contains(modelName))
+				return f;
+		}
+		return null;
+	}
+	private static String getSavedName(ModelJob job, String aliment) {
+		if(job.equals(ModelJob.Regonize))
+			return "recognize";
+		else if(job.equals(ModelJob.Evaluate))
+			return "evaluate-" + aliment;
+		else
+			return "";
+	}
 }

@@ -33,8 +33,8 @@ import neural_network.StatUtil;
 public class EvaluationCNN {
 	
 	public static final String MAIN_PATH = "Data\\Fresh-Rotten";
-	public static final String TRAINING_PATH = "\\train";
-	public static final String TEST_PATH = "\\test";
+	public static final String TRAINING_PATH = "\\train-banana";
+	public static final String TEST_PATH = "\\test-banana";
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
@@ -51,7 +51,7 @@ public class EvaluationCNN {
 		int batchSize = 50;
 		int nIn = nRows * nCols;
 		int[] nHidden = { 20, 50, 500 };
-		int epochs = 6;
+		int epochs = 3;
 		int nbFoldersTrain = StatUtil.getNbOfUpFolders(new File(MAIN_PATH + TRAINING_PATH));
 		int nbFoldersTest = StatUtil.getNbOfUpFolders(new File(MAIN_PATH + TEST_PATH));
 
@@ -160,7 +160,7 @@ public class EvaluationCNN {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		ModelUtils.saveModel(model, nOut, nHidden, eval2.accuracy());
+		ModelUtils.saveEvaluationModel(model, getAlimentInPath(), eval2.accuracy(), trainNumExamples);
 		trainingSetIterator.reset();
 		DataSet testDataSet = trainingSetIterator.next();
 //        System.out.println(testDataSet);
@@ -173,5 +173,10 @@ public class EvaluationCNN {
 		String modelPrediction = allClassLabels.get(predictedClasses[0]);
 		System.out.print("\nFor a single example that is labeled " + expectedResult + " the model predicted "
 				+ modelPrediction + "\n\n");
+	}
+	
+	private static String getAlimentInPath() {
+		int hyphenId = TRAINING_PATH.indexOf('-');
+		return TRAINING_PATH.substring(hyphenId, TRAINING_PATH.length());
 	}
 }
