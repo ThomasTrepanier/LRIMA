@@ -51,7 +51,7 @@ public class EvaluationCNN {
 		int batchSize = 50;
 		int nIn = nRows * nCols;
 		int[] nHidden = { 20, 50, 500 };
-		int epochs = 1;
+		int epochs = 6;
 		int nbFoldersTrain = StatUtil.getNbOfUpFolders(new File(MAIN_PATH + TRAINING_PATH));
 		int nbFoldersTest = StatUtil.getNbOfUpFolders(new File(MAIN_PATH + TEST_PATH));
 
