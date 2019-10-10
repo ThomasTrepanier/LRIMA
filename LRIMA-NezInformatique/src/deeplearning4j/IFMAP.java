@@ -64,6 +64,7 @@ public class IFMAP extends JFrame {
 			}
 		});
 		recognitionModel = ModelUtils.loadModel(ModelJob.Regonize, "", true);
+		recognitionModel.init();
 		System.out.println(recognitionModel);
 	}
 
