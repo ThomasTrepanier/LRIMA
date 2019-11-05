@@ -31,8 +31,9 @@ public class ModelUtils {
 
 	static final String SAVE_PATH = "results\\";
 	static final String RESULTS_FILE = "DL4J-Results.xlsx";
-
-	public static void trainModel(MultiLayerNetwork model, DataSet trainingSet, int epochs) {
+	static final String TRAINED_SAVE_PATH = "Trained Networks\\";
+	
+;	public static void trainModel(MultiLayerNetwork model, DataSet trainingSet, int epochs) {
 		for (int i = 0; i < epochs; i++) {
 			model.fit(trainingSet);
 		}
@@ -156,7 +157,7 @@ public class ModelUtils {
 	public static boolean saveEvaluationModel(MultiLayerNetwork model, String aliment, double accuracy, int examples) {
 		String name = "evaluate-" + aliment + "-" + accuracy + "-" + examples;
 
-		File locationToSave = new File(SAVE_PATH + name + ".zip"); // Where to save the network. Note: the file is in
+		File locationToSave = new File(TRAINED_SAVE_PATH + name + ".zip"); // Where to save the network. Note: the file is in
 																	// .zip format - can be opened externally
 		boolean saveUpdater = true; // Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you
 									// want to train your network more in the future
@@ -190,7 +191,8 @@ public class ModelUtils {
 			return null;
 		}
 		
-		File parentFolder = new File(SAVE_PATH);
+		File parentFolder = new File(TRAINED_SAVE_PATH);;
+		
 		for(File f : parentFolder.listFiles()) {
 			if(f.getName().contains(modelName))
 				return f;

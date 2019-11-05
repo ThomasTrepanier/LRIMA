@@ -8,12 +8,14 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.poi.hpsf.Thumbnail;
 import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
 
+import net.coobird.thumbnailator.Thumbnails;
 import pictureUtils.PictureReader;
 
 import javax.swing.SpringLayout;
@@ -34,8 +36,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 
 public class IFMAP extends JFrame {
-	
+
 	private static final File DEFAULT_IMAGECHOOSER_PATH = new File("Data");
+	private static final String EVALUATE_PATH = "Trained Networks\\";
+	private static final String EVALUTE_PATH_START = "evaluate";
 	private static MultiLayerNetwork recognitionModel;
 	private static MultiLayerNetwork evaluationModel;
 	private final JFileChooser fileChooser;
@@ -49,6 +53,7 @@ public class IFMAP extends JFrame {
 	private BufferedImage imageToEvaluate = null;
 	private ImageViewer imageViewer;
 	private JButton btnRecognizeFruit;
+
 	/**
 	 * Launch the application.
 	 */
@@ -72,17 +77,17 @@ public class IFMAP extends JFrame {
 	 * Create the frame.
 	 */
 	public IFMAP() {
-		
+
 		fileChooser = new JFileChooser(DEFAULT_IMAGECHOOSER_PATH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
-		
+
 		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		
+
 		btnChoosePicture = new JButton("Choose picture");
 		btnChoosePicture.setBounds(30, 54, 132, 29);
 		btnChoosePicture.addActionListener(new ActionListener() {
@@ -93,32 +98,34 @@ public class IFMAP extends JFrame {
 		contentPane.setLayout(null);
 		btnChoosePicture.setFont(new Font("Verdana", Font.PLAIN, 11));
 		contentPane.add(btnChoosePicture);
-		
+
 		lblFileChosen = new JLabel("file chosen");
 		lblFileChosen.setBounds(20, 20, 267, 15);
 		lblFileChosen.setFont(new Font("Verdana", Font.PLAIN, 11));
 		contentPane.add(lblFileChosen);
-		
+
 		btnEvaluateAge = new JButton("Evaluate age");
 		btnEvaluateAge.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+//				System.out.println("ImgToEv:" + imageToEvaluate);
+				evaluateFruit(imageToEvaluate);
 			}
 		});
 		btnEvaluateAge.setBounds(266, 141, 144, 37);
 		btnEvaluateAge.setFont(new Font("Verdana", Font.PLAIN, 11));
 		contentPane.add(btnEvaluateAge);
-		
+
 		lblResult = new JLabel("Result:");
 		lblResult.setHorizontalAlignment(SwingConstants.CENTER);
 		lblResult.setBounds(29, 208, 380, 20);
 		lblResult.setFont(new Font("Verdana", Font.BOLD, 15));
 		contentPane.add(lblResult);
-		
+
 		imageViewer = new ImageViewer();
 		imageViewer.setBounds(310, 15, 100, 100);
 		imageViewer.initialize(null, imageViewer.getBounds());
 		contentPane.add(imageViewer);
-		
+
 		btnRecognizeFruit = new JButton("Recognize fruit");
 		btnRecognizeFruit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -128,93 +135,103 @@ public class IFMAP extends JFrame {
 		btnRecognizeFruit.setBounds(30, 142, 144, 37);
 		contentPane.add(btnRecognizeFruit);
 	}
-	
+
 	private BufferedImage choosePicture() {
 		BufferedImage img = null;
 		int choice = fileChooser.showOpenDialog(null);
 		System.out.println(choice);
-		
+
 		if (choice == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            //This is where a real application would open the file.
-            if(file == null)
-            	return null;
-            
-            System.out.println("Opening: " + file.getName() + ".");
-            try {
+			File file = fileChooser.getSelectedFile();
+			// This is where a real application would open the file.
+			if (file == null)
+				return null;
+
+			System.out.println("Opening: " + file.getName() + ".");
+			try {
 				img = ImageIO.read(file);
 				imageViewer.setImage(img);
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-            lblFileChosen.setText(file.getPath());
-        } else {
-            System.out.println("Open command cancelled by user.");
-        }
+			lblFileChosen.setText(file.getPath());
+		} else {
+			System.out.println("Open command cancelled by user.");
+		}
 		return img;
 	}
-	
+
 	private String recognizeFruit(BufferedImage img) {
-		if(img == null || recognitionModel == null)
+		if (img == null || recognitionModel == null)
 			return "";
-		
+
 		INDArray output = passImage(img, recognitionModel);
-		System.out.println("Output: " + output);
-		String fruit = convertToFruit(output, recognitionModel);
-		
-		System.out.println(fruit);
-		lblResult.setText(fruit);
-		return fruit;
-	}
-	
-	private INDArray passImage(BufferedImage img, MultiLayerNetwork model) {
-		INDArray output = null;
-		 // Main background thread, this will load the model and test the input image
-	    // The dimensions of the images are set here
-            int height = img.getHeight();
-            int width = img.getWidth();
-            int channels = 3;
-
-            //Now we load the model from the raw folder with a try / catch block
-            try {
-                //Use the nativeImageLoader to convert to numerical matrix
-                NativeImageLoader loader = new NativeImageLoader(height, width, channels);
-
-                //put image into INDArray
-                INDArray image = loader.asMatrix(img);
-
-                //values need to be scaled
-                DataNormalization scalar = new ImagePreProcessingScaler(0, 1);
-
-                //then call that scalar on the image dataset
-                scalar.transform(image);
-
-                //pass through neural net and store it in output array
-                output = model.output(image);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return output;
-	}
-
-	private String convertToFruit(INDArray output, MultiLayerNetwork model) {
-		Pair<Integer, Double> result = getResultId(output.getRow(0));
+//		System.out.println("Output: " + output);
+		Pair<Integer, Double> result = getResult(output, recognitionModel);
 		int resultId = result.getLeft();
 		double resultAccuracy = result.getRight();
-		
+
 		String fruitName = getFruitInFilesFromId(resultId);
-		return fruitName + " with " + round(resultAccuracy * 100) + "% certainty";
+		String text = fruitName + " with " + round(resultAccuracy * 100, 2) + "% certainty";
+		System.out.println(text);
+		lblResult.setText(text);
+		return fruitName;
 	}
-	
+
+	private INDArray passImage(BufferedImage img, MultiLayerNetwork model) {
+		System.out.println("IMG: " + img);
+		INDArray output = null;
+		// Main background thread, this will load the model and test the input image
+		// The dimensions of the images are set here
+		int height = img.getHeight();
+		int width = img.getWidth();
+		int channels = 3;
+
+		int nbInputs = model.layerInputSize(0);
+		System.out.println("Number inputs: " + nbInputs);
+		if(nbInputs < height * width) {
+			int targetSize = (int) Math.sqrt(nbInputs);
+			try {
+				Thumbnails.of(img).size(targetSize, targetSize).asBufferedImage();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		// Now we load the model from the raw folder with a try / catch block
+		try {
+			// Use the nativeImageLoader to convert to numerical matrix
+			NativeImageLoader loader = new NativeImageLoader(height, width, channels);
+			// put image into INDArray
+			INDArray image = loader.asMatrix(img);
+			// values need to be scaled
+			DataNormalization scalar = new ImagePreProcessingScaler(0, 1);
+
+			// then call that scalar on the image dataset
+			scalar.transform(image);
+
+			// pass through neural net and store it in output array
+			output = model.output(image);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return output;
+	}
+
+	private Pair<Integer, Double> getResult(INDArray output, MultiLayerNetwork model) {
+		Pair<Integer, Double> result = getResultId(output.getRow(0));
+		return result;
+	}
+
 	private Pair<Integer, Double> getResultId(INDArray outputs) {
 		Pair<Integer, Double> result;
 		int id = 0;
 		double value = outputs.getDouble(id);
-		
-		for(int i = 0; i < outputs.length(); i++) {
-			if(outputs.getDouble(i) > value) {
+
+		for (int i = 0; i < outputs.length(); i++) {
+			if (outputs.getDouble(i) > value) {
 				id = i;
 				value = outputs.getDouble(i);
 			}
@@ -222,14 +239,47 @@ public class IFMAP extends JFrame {
 		result = Pair.of(id, value);
 		return result;
 	}
-	
-	//TODO: Read from file in zip
+
+	// TODO: Read from file in zip
 	private String getFruitInFilesFromId(int id) {
 		File labelsFile = new File("Data\\Fruits\\Fruit_Training");
 		return labelsFile.listFiles()[id].getName();
 	}
-	
-	private double round(double d) {
-		return Math.round(d * 100) / 100;
+
+	private double round(double d, int decimals) {
+		return Math.round(d * Math.pow(10, decimals)) / Math.pow(10, decimals);
+	}
+
+	private String evaluateFruit(BufferedImage img) {
+		String fruit = recognizeFruit(img);
+		System.out.println("Fruit: " + fruit);
+		evaluationModel = ModelUtils.loadModel(ModelJob.Evaluate, fruit.toLowerCase(), true);
+		String evaluation;
+		if (evaluationModel == null) {
+			System.out.println("No Evaluation Model found for " + fruit);
+			return "";
+		}
+
+		INDArray output = passImage(img, evaluationModel);
+		System.out.println("Output: " + output);
+		Pair<Integer, Double> result = getResult(output, evaluationModel);
+		double resultAccuracy = result.getRight();
+
+		evaluation = getEvaluationFromId(result.getLeft());
+		String text = evaluation + " with " + round(resultAccuracy * 100, 2) + "% certainty";
+		System.out.println(text);
+		lblResult.setText(text);
+		return evaluation;
+	}
+
+	private String getEvaluationFromId(int id) {
+		switch (id) {
+		case (0):
+			return "Rotten";
+		case (1):
+			return "Fresh";
+		default:
+			return "None";
+		}
 	}
 }

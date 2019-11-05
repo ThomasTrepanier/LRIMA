@@ -18,7 +18,7 @@ public class ImageViewer extends JPanel {
 	public void setImage(Image img) {
 		this.img = img;
 		repaint();
-		System.out.println(img);
+//		System.out.println(img);
 		//
 	}
 	/**
